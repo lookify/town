@@ -9,6 +9,7 @@ import (
   "encoding/json"
   "os"
   "strconv"
+  "regexp"
   "github.com/lookify/town/cluster"
   dockerapi "github.com/fsouza/go-dockerclient"
 )
