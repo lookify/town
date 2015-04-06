@@ -11,7 +11,7 @@ type ExistContainer struct {
   Running bool
 }
 
-func NewExistContainer(id string, name string, index int, running bool) *ExistContainer {
+func NewExistContainer(id string, name string, index int, running bool) ExistContainer {
   return ExistContainer{
     ID: id,
     Name: name,
