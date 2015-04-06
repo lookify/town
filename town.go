@@ -103,7 +103,7 @@ func (t *Town) StopContainers(checkChanged bool) {
   for i := len(t.cluster.Nodes) - 1; i >= 0; i-- {
     node := t.cluster.Nodes[i]
     if (!checkChanged || node.Container.Changed) && len(node.Container.Exist) > 0 {
-      for container := range node.Container.Exist {
+      for _, container := range node.Container.Exist {
         if container.Running {
           err := t.docker.StopContainer(container.ID, 10)
           if err == nil {
