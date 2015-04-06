@@ -21,7 +21,7 @@ type Cluster struct {
   graph *Graph
   application *Container
   cluster []string
-  nodes []*Node
+  Nodes []*Node
 //  docker *dockerapi.Client
 }
 
@@ -42,7 +42,7 @@ func CopyContainerConfig(container *Container) *Container {
 }
 
 func (c *Cluster) AddChangeDependant() {
-  for _, node := range c.nodes {
+  for _, node := range c.Nodes {
     // && len(node.Container.Exist)
     if node.Container.Changed {
       log.Println("Check ", node.ID)
@@ -129,7 +129,7 @@ func (c *Cluster) ReadFile() {
 
   c.CheckCluster()
 
-  c.nodes = c.graph.Topsort()
+  c.Nodes = c.graph.Topsort()
 }
 
 func (c *Cluster) FindNodeByName(name string) (*Node, int) {

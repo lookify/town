@@ -89,7 +89,7 @@ func (t *Town) isChangedImage(node *cluster.Node, container *dockerapi.Container
     if secondError == nil {
       return secondImage.Created.After(image.Created)
     } else {
-      log.Println("[ERROR] Could not inspect image ", containerName)
+      log.Println("[ERROR] Could not inspect image ", node.Container.Name)
     }
   } else {
     log.Println("[ERROR] Could not inspect image ", imageName)
@@ -100,16 +100,16 @@ func (t *Town) isChangedImage(node *cluster.Node, container *dockerapi.Container
 func (t *Town) StopContainers(checkChanged bool) {
   log.Println("Stop...")
   //for node := range t.cluster.nodes {
-  for i := len(t.cluster.nodes) - 1; i >= 0; i-- {
-    node := t.cluster.nodes[i]
+  for i := len(t.cluster.Nodes) - 1; i >= 0; i-- {
+    node := t.cluster.Nodes[i]
     if (!checkChanged || node.Container.Changed) && len(node.Container.Exist) > 0 {
       for container := range node.Container.Exist {
         if container.Running {
           err := t.docker.StopContainer(container.ID, 10)
           if err == nil {
-            log.Println("   -  ", name)
+            log.Println("   -  ", container.Name)
           } else {
-            log.Println("   -  ", name, " failed ", err)
+            log.Println("   -  ", container.Name, " failed ", err)
           }
         }
       }
@@ -121,8 +121,8 @@ func (t *Town) StopContainers(checkChanged bool) {
 func (t *Town) RemoveContainers(checkChanged bool) {
   log.Println("Remove...")
   //for node := range t.cluster.nodes {
-  for i := len(t.cluster.nodes) - 1; i >= 0; i-- {
-    node := t.cluster.nodes[i]
+  for i := len(t.cluster.Nodes) - 1; i >= 0; i-- {
+    node := t.cluster.Nodes[i]
     if (!checkChanged || node.Container.Changed) && len(node.Container.Exist) > 0 {
       for container := range node.Container.Exist {
         err := t.docker.RemoveContainer(dockerapi.RemoveContainerOptions{
@@ -282,7 +282,7 @@ func (t *Town) createContainer(node *cluster.Node, index int) (string, string) {
 
 func (t *Town) CreateContainers(checkChanged bool) {
   log.Println("Create...")
-  for _, node := range t.cluster.nodes {
+  for _, node := range t.cluster.Nodes {
 
     if !checkChanged || node.Container.Changed {
       ids := make([]string, 0, node.Container.Scale )
