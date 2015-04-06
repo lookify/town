@@ -57,14 +57,14 @@ func (t *Town) Provision(checkChanged bool) {
       name := container.Name[1:]
       node, index := t.cluster.FindNodeByName(name)
       if node != nil && index > 0 {
-        if node.config.Exist == nil {
-          node.config.Exist = []cluster.ExistContainer{}
+        if node.Container.Exist == nil {
+          node.Container.Exist = []cluster.ExistContainer{}
         }
         runningContainer := cluster.NewExistContainer(listing.ID, name, index, container.State.Running)
         if checkChanged {
-          node.config.Changed = t.isChangedImage(node, container)
+          node.Container.Changed = t.isChangedImage(node, container)
         }
-        node.config.Exist = append(node.config.Exist, runningContainer);
+        node.Container.Exist = append(node.Container.Exist, runningContainer);
       }
     } else {
       log.Println("[ERROR] Unable to inspect container:", listing.ID[:12], err)
@@ -85,7 +85,7 @@ func (t *Town) isChangedImage(node *cluster.Node, container *dockerapi.Container
   var imageName = container.Image
   image , error := t.docker.InspectImage(imageName)
   if error == nil {
-    secondImage , secondError := t.docker.InspectImage(node.config.Image)
+    secondImage , secondError := t.docker.InspectImage(node.Container.Image)
     if secondError == nil {
       return secondImage.Created.After(image.Created)
     } else {
@@ -102,8 +102,8 @@ func (t *Town) StopContainers(checkChanged bool) {
   //for node := range t.cluster.nodes {
   for i := len(t.cluster.nodes) - 1; i >= 0; i-- {
     node := t.cluster.nodes[i]
-    if (!checkChanged || node.config.Changed) && len(node.config.Exist) > 0 {
-      for container := range node.config.Exist {
+    if (!checkChanged || node.Container.Changed) && len(node.Container.Exist) > 0 {
+      for container := range node.Container.Exist {
         if container.Running {
           err := t.docker.StopContainer(container.ID, 10)
           if err == nil {
@@ -123,8 +123,8 @@ func (t *Town) RemoveContainers(checkChanged bool) {
   //for node := range t.cluster.nodes {
   for i := len(t.cluster.nodes) - 1; i >= 0; i-- {
     node := t.cluster.nodes[i]
-    if (!checkChanged || node.config.Changed) && len(node.config.Exist) > 0 {
-      for container := range node.config.Exist {
+    if (!checkChanged || node.Container.Changed) && len(node.Container.Exist) > 0 {
+      for container := range node.Container.Exist {
         err := t.docker.RemoveContainer(dockerapi.RemoveContainerOptions{
           ID: container.ID,
           RemoveVolumes: false,
@@ -146,21 +146,21 @@ func doLink(name string, num int) string {
 }
 
 func (t *Town) createContainer(node *cluster.Node, index int) (string, string) {
-  containerName := node.config.Name + "-" + strconv.Itoa(index)
+  containerName := node.Container.Name + "-" + strconv.Itoa(index)
 
   log.Println("   -  ", containerName)
 
-  node.config.Hostname = containerName // ?? Help !!!!
+  node.Container.Hostname = containerName // ?? Help !!!!
 
-  env :=  make([]string, 0, cap(node.config.Environment))
-  for _, e := range node.config.Environment {
+  env :=  make([]string, 0, cap(node.Container.Environment))
+  for _, e := range node.Container.Environment {
     env = append(env, t.exec(e, index))
   }
 
   volumes := make(map[string]struct{})
-  binds := make([]string, 0, cap(node.config.Volumes))
-  if len(node.config.Volumes) > 0 {
-    for _, volume := range node.config.Volumes {
+  binds := make([]string, 0, cap(node.Container.Volumes))
+  if len(node.Container.Volumes) > 0 {
+    for _, volume := range node.Container.Volumes {
       volume = t.exec(volume, index)
       vol := strings.Split(volume, ":")
       if len(vol) > 1 {
@@ -173,9 +173,9 @@ func (t *Town) createContainer(node *cluster.Node, index int) (string, string) {
   }
 
   dockerConfig := dockerapi.Config{
-      Image: node.config.Image,
-      Hostname: node.config.Hostname,
-      PortSpecs: node.config.Ports,
+      Image: node.Container.Image,
+      Hostname: node.Container.Hostname,
+      PortSpecs: node.Container.Ports,
       Env: env,
       Volumes: volumes,
 
@@ -188,8 +188,8 @@ func (t *Town) createContainer(node *cluster.Node, index int) (string, string) {
       //Cmd: []
   }
 
-  if len(node.config.Command) > 0 {
-    cmd := t.exec(node.config.Command, i)
+  if len(node.Container.Command) > 0 {
+    cmd := t.exec(node.Container.Command, i)
     dockerConfig.Cmd = []string{ cmd }
   }
 
@@ -203,14 +203,14 @@ func (t *Town) createContainer(node *cluster.Node, index int) (string, string) {
   parents := t.cluster.graph.In[node]
   for _, parent := range parents {
     for i := 1; i <= parent.status.scale; i++ {
-      link := doLink(parent.config.Name, i)
+      link := doLink(parent.Container.Name, i)
       links = append(links, link);
     }
   }
 
   portBindings := map[dockerapi.Port][]dockerapi.PortBinding{}
   // create ports
-  for _, ports := range node.config.Ports {
+  for _, ports := range node.Container.Ports {
 
     port := strings.Split(ports, ":")
     var p dockerapi.Port
@@ -237,7 +237,7 @@ func (t *Town) createContainer(node *cluster.Node, index int) (string, string) {
     PortBindings: portBindings,
     NetworkMode: "bridge",
     PublishAllPorts: false,
-    Privileged: node.config.Privileged,
+    Privileged: node.Container.Privileged,
   }
 
   opts := dockerapi.CreateContainerOptions{Name: containerName, Config: &dockerConfig, HostConfig: &hostConfig}
@@ -284,13 +284,13 @@ func (t *Town) CreateContainers(checkChanged bool) {
   log.Println("Create...")
   for _, node := range t.cluster.nodes {
 
-    if !checkChanged || node.config.Changed {
-      ids := make([]string, 0, node.config.Scale )
+    if !checkChanged || node.Container.Changed {
+      ids := make([]string, 0, node.Container.Scale )
 
-      hosts := make([]string, 0, node.config.Scale)
+      hosts := make([]string, 0, node.Container.Scale)
 
-      for i := 1; i <= node.config.Scale; i++ {
-        log.Println(node.config.Name, "  image: ", node.config.Image)
+      for i := 1; i <= node.Container.Scale; i++ {
+        log.Println(node.Container.Name, "  image: ", node.Container.Image)
         id, host = t.CreateContainer(node, i)
         ids = append(ids, id)
         hosts = append(links, host)
@@ -355,11 +355,11 @@ func (t *Town) exec(text string, scale int) string {
       node := t.cluster.graph.FindNodeByID(name)
 
       var buffer bytes.Buffer
-      for i := 1; i <= node.config.Scale; i++ {
+      for i := 1; i <= node.Container.Scale; i++ {
         buffer.WriteString(name)
         buffer.WriteString("-")
         buffer.WriteString(strconv.Itoa( i ))
-        if i != node.config.Scale {
+        if i != node.Container.Scale {
           buffer.WriteString(",")
         }
       }

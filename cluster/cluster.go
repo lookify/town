@@ -43,14 +43,14 @@ func CopyContainerConfig(container *Container) *Container {
 
 func (c *Cluster) AddChangeDependant() {
   for _, node := range c.nodes {
-    // && len(node.config.Exist)
-    if node.config.Changed {
+    // && len(node.Container.Exist)
+    if node.Container.Changed {
       log.Println("Check ", node.ID)
       parents := c.graph.FindConnection(node, c.graph.In)
       if parents != nil {
         for _, parent := range parents {
           log.Println("  - ", parent.ID)
-          parent.config.Changed = true
+          parent.Container.Changed = true
         }
       }
     }
@@ -69,7 +69,7 @@ func (c *Cluster) AddContainer(name string, container Container) {
       c.graph.AddNode(node)
     }
 
-    node.config = CopyContainerConfig(&container)
+    node.Container = CopyContainerConfig(&container)
 
     for _, link := range container.Links {
       link = strings.TrimSpace( link );
@@ -90,10 +90,10 @@ func (c *Cluster) CheckCluster() {
 
     found := false
     for _, node := range c.graph.Nodes {
-      if (name == node.config.Name) {
+      if (name == node.Container.Name) {
         scale, err := strconv.Atoi( strings.TrimSpace(split[1]) )
         if err == nil {
-          node.config.Scale = scale
+          node.Container.Scale = scale
         } else {
           log.Println("ERROR: Could not parse sclae number ", split[1], " for container ", name)
         }

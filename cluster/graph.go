@@ -12,7 +12,7 @@ type Node struct {
 
 //  status *Status
 
-  config *Container  // rename it to container
+  Container *Container  // rename it to container
 
   sync.Mutex
 }
