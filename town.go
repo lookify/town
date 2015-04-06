@@ -58,9 +58,9 @@ func (t *Town) Provision(checkChanged bool) {
       node, index := t.cluster.FindNodeByName(name)
       if node != nil && index > 0 {
         if node.config.Exist == nil {
-          node.config.Exist = []ExistContainer{}
+          node.config.Exist = []cluster.ExistContainer{}
         }
-        runningContainer := NewExistContainer(listing.ID, name, index, container.State.Running)
+        runningContainer := cluster.NewExistContainer(listing.ID, name, index, container.State.Running)
         if checkChanged {
           node.config.Changed = t.isChangedImage(node, container)
         }
