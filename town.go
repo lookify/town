@@ -6,7 +6,7 @@ import (
   // "fmt"
 //  "regexp"
   "strconv"
-  "github.com/lookify/town/cluster"
+  Cluster "github.com/lookify/town/cluster"
   dockerapi "github.com/fsouza/go-dockerclient"
 )
 
