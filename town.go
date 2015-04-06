@@ -5,10 +5,13 @@ import (
   "log"
   // "fmt"
 //  "regexp"
+  "os"
   "strconv"
   "github.com/lookify/town/cluster"
   dockerapi "github.com/fsouza/go-dockerclient"
 )
+
+const DEFAULT_ENDPOINT = "unix:///var/run/docker.sock"
 
 type Town struct {
   cluster *cluster.Cluster
@@ -58,15 +61,6 @@ func (t *Town) Provision(checkChanged bool) {
           node.config.Exist = []ExistContainer{}
         }
         runningContainer := NewExistContainer(listing.ID, name, index, container.State.Running)
-        // if addChanged {
-        //   changed := t.isChangedImage(node, container);
-        //   if changed {
-        //     node.Exist = append(node.Exist, runningContainer);
-        //   }
-        // } else {
-        //   node.Exist = append(node.Exist, runningContainer);
-        // }
-
         if checkChanged {
           node.config.Changed = t.isChangedImage(node, container)
         }
@@ -87,11 +81,11 @@ func (t *Town) Provision(checkChanged bool) {
  * Check node and running container for changes.
  * TODO: add cache to docker call.
  **/
-func (t *Town) isChangedImage(node *Node, container *dockerapi.Container) bool {
+func (t *Town) isChangedImage(node *cluster.Node, container *dockerapi.Container) bool {
   var imageName = container.Image
   image , error := t.docker.InspectImage(imageName)
   if error == nil {
-    secondImage , secondError := t.docker.InspectImage(containerNode.config.Image)
+    secondImage , secondError := t.docker.InspectImage(node.config.Image)
     if secondError == nil {
       return secondImage.Created.After(image.Created)
     } else {
@@ -151,7 +145,7 @@ func doLink(name string, num int) string {
   return name + "-" + index + ":" + name + "-" + index
 }
 
-func (t *Town) createContainer(node *Node, index int) (string, string) {
+func (t *Town) createContainer(node *cluster.Node, index int) (string, string) {
   containerName := node.config.Name + "-" + strconv.Itoa(index)
 
   log.Println("   -  ", containerName)
