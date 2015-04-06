@@ -50,7 +50,7 @@ func (c *Cluster) GetLinks(node *Node) []string {
   links := []string{}
   parents := c.graph.In[node]
   for _, parent := range parents {
-    for i := 1; i <= parent.status.scale; i++ {
+    for i := 1; i <= parent.Container.Scale; i++ {
       link := doLink(parent.Container.Name, i)
       links = append(links, link);
     }
