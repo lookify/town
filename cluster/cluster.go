@@ -34,7 +34,7 @@ func NewCluster() *Cluster {
   }
 }
 
-func CopyContainerConfig(container *ContainerConfig) *ContainerConfig {
+func CopyContainerConfig(container *Container) *ContainerConfig {
   copy := &ContainerConfig{}
   *copy = *container
 
@@ -44,13 +44,13 @@ func CopyContainerConfig(container *ContainerConfig) *ContainerConfig {
 func (c *Cluster) AddChangeDependant() {
   for node := range c.nodes {
     // && len(node.config.Exist)
-    if node.config.Changed > 0 {
-      log.Println("Check ", node.Name)
+    if node.config.Changed {
+      log.Println("Check ", node.ID)
       parents := c.graph.FindConnection(node, c.graph.In)
       if parents != nil {
         for parent := range parents {
-          log.Println("  - ", parent.Name)
-          parent.Changed = true
+          log.Println("  - ", parent.ID)
+          parent.config.Changed = true
         }
       }
     }

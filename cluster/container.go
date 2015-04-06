@@ -1,7 +1,7 @@
 package cluster
 
 import (
-  dockerapi "github.com/fsouza/go-dockerclient"
+//  dockerapi "github.com/fsouza/go-dockerclient"
 )
 
 type ExistContainer struct {
@@ -12,7 +12,7 @@ type ExistContainer struct {
 }
 
 func NewExistContainer(id string, name string, index int, running bool) *Cluster {
-  return &RunningContainer{
+  return &ExistContainer{
     ID: id,
     Name: name,
     Index: index,
