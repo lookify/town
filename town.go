@@ -143,7 +143,7 @@ func (t *Town) RemoveContainers(checkChanged bool) {
 
 
 
-func (t *Town) CreateContainer(node *cluster.Node, index int) (*string, *string) {
+func (t *Town) CreateContainer(node *cluster.Node, index int) (string, string) {
   containerName := node.Container.Name + "-" + strconv.Itoa(index)
 
   log.Println("   -  ", containerName)
@@ -268,7 +268,7 @@ func (t *Town) CreateContainer(node *cluster.Node, index int) (*string, *string)
     log.Println("error: ", err);
   }
 
-  return nil, nil
+  return "", ""
 }
 
 func (t *Town) CreateContainers(checkChanged bool) {
@@ -282,7 +282,7 @@ func (t *Town) CreateContainers(checkChanged bool) {
 
       for i := 1; i <= node.Container.Scale; i++ {
         log.Println(node.Container.Name, "  image: ", node.Container.Image)
-        id, host = t.CreateContainer(node, i)
+        id, host := t.CreateContainer(node, i)
         ids = append(ids, id)
         hosts = append(links, host)
       }
