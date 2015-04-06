@@ -5,6 +5,7 @@ import (
   "log"
   // "fmt"
 //  "regexp"
+  "bytes"
   "encoding/json"
   "os"
   "strconv"
@@ -13,6 +14,12 @@ import (
 )
 
 const DEFAULT_ENDPOINT = "unix:///var/run/docker.sock"
+
+var (
+  SCALE_NUM_REG, _ = regexp.Compile("\\$\\{SCALE_NUM:(.+)\\}")
+//  SCALE_TOTAL_REG, _ = regexp.Compile("\\$\\{SCALE_NUM:(.+)\\}")
+  HOSTS_REG, _ = regexp.Compile("\\$\\{(.+)_HOSTS\\}")
+)
 
 type Town struct {
   cluster *cluster.Cluster
@@ -284,7 +291,7 @@ func (t *Town) CreateContainers(checkChanged bool) {
         log.Println(node.Container.Name, "  image: ", node.Container.Image)
         id, host := t.CreateContainer(node, i)
         ids = append(ids, id)
-        hosts = append(links, host)
+        hosts = append(hosts, host)
       }
 
       if len(ids) > 1 {
@@ -343,7 +350,7 @@ func (t *Town) exec(text string, scale int) string {
     if len(hostMatch[0]) > 1 {
       //nums := strings.Split(, ",")
       name := strings.ToLower(hostMatch[0][1])
-      node := t.cluster.graph.FindNodeByID(name)
+      node := t.cluster.FindNodeByID(name)
 
       var buffer bytes.Buffer
       for i := 1; i <= node.Container.Scale; i++ {
