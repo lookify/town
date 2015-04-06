@@ -55,7 +55,7 @@ func (t *Town) Provision(checkChanged bool) {
     container, err := t.docker.InspectContainer(listing.ID)
     if err == nil {
       name := container.Name[1:]
-      node, index := t.cluster.findNodeByName(name)
+      node, index := t.cluster.FindNodeByName(name)
       if node != nil && index > 0 {
         if node.config.Exist == nil {
           node.config.Exist = []ExistContainer{}

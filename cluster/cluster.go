@@ -132,7 +132,7 @@ func (c *Cluster) ReadFile() {
   c.nodes = c.graph.Topsort()
 }
 
-func (c *Cluster) findNodeByName(name string) (*Node, int) {
+func (c *Cluster) FindNodeByName(name string) (*Node, int) {
   nodeName, index := c.ParseName(name)
   return c.graph.FindNodeByID(nodeName), index
 }
