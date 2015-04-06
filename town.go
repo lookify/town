@@ -143,7 +143,7 @@ func (t *Town) RemoveContainers(checkChanged bool) {
 
 
 
-func (t *Town) createContainer(node *cluster.Node, index int) (string, string) {
+func (t *Town) CreateContainer(node *cluster.Node, index int) (*string, *string) {
   containerName := node.Container.Name + "-" + strconv.Itoa(index)
 
   log.Println("   -  ", containerName)
