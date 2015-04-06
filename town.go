@@ -6,12 +6,12 @@ import (
   // "fmt"
 //  "regexp"
   "strconv"
-  "cluster"
+  "github.com/lookify/town/cluster"
   dockerapi "github.com/fsouza/go-dockerclient"
 )
 
 type Town struct {
-  cluster *Cluster
+  cluster *cluster.Cluster
   docker *dockerapi.Client
 
 //  containers []*dockerapi.Container
@@ -26,7 +26,7 @@ func NewTown() *Town {
 }
 
 func (t *Town) ReadFile() {
-  t.cluster = NewCluster()
+  t.cluster = cluster.NewCluster()
   t.cluster.ReadFile()
 }
 
