@@ -25,7 +25,7 @@ func NewTown() *Town {
   }
 }
 
-func (t *Town) ReadFile() {}
+func (t *Town) ReadFile() {
   t.cluster = NewCluster()
   t.cluster.ReadFile()
 }
