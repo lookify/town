@@ -34,8 +34,8 @@ func NewCluster() *Cluster {
   }
 }
 
-func CopyContainerConfig(container *Container) *ContainerConfig {
-  copy := &ContainerConfig{}
+func CopyContainerConfig(container *Container) *Container {
+  copy := &Container{}
   *copy = *container
 
   return copy;
