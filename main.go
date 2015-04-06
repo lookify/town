@@ -34,14 +34,21 @@ func main() {
 
   app.Commands = []cli.Command{
     {
-      Name:      "rerun",
-      ShortName: "rerun",
-      Usage:     "rerun a cluster",
+      Name:      "restart",
+      ShortName: "restart",
+      Usage:     "restart a cluster",
       Action: func(c *cli.Context) {
-        cluster := NewCluster()
-        cluster.ReadFile()
-        cluster.Stop()
-        cluster.Run()
+        // cluster := NewCluster()
+        // cluster.ReadFile()
+        // cluster.Stop()
+        // cluster.Run()
+        town := NewTown()
+        town.ReadFile()
+        town.Connect()
+        town.Provision(false)
+        town.StopContainers(false)
+        town.RemoveContainers(false)
+        town.CreateContainers(false)
       },
     },
     {
@@ -49,10 +56,18 @@ func main() {
       ShortName: "run",
       Usage:     "run a cluster",
       Action: func(c *cli.Context) {
-        cluster := NewCluster()
-        cluster.ReadFile()
-        //cluster.StopChanged()
-        cluster.ResetChanged()
+        town := NewTown()
+        town.ReadFile()
+        town.Connect()
+        town.Provision(true)
+        town.StopContainers(true)
+        town.RemoveContainers(true)
+        town.CreateContainers(true)
+
+        // cluster := NewCluster()
+        // cluster.ReadFile()
+        // //cluster.StopChanged()
+        // cluster.ResetChanged()
         // ,-3074457345618258603,3074457345618258602
 // ([^,]+,?)+
 
@@ -83,29 +98,32 @@ func main() {
       ShortName: "stop",
       Usage:     "stop a cluster",
       Action: func(c *cli.Context) {
-        cluster := NewCluster()
-        cluster.ReadFile()
-        cluster.Stop()
+        town := NewTown()
+        town.ReadFile()
+        town.Connect()
+        town.Provision(false)
+        town.StopContainers(false)
+        town.RemoveContainers(false)
       },
     },
-    {
-      Name:      "hosts",
-      ShortName: "hosts",
-      Usage:     "update hosts",
-      Action: func(c *cli.Context) {
-        cluster := NewCluster()
-        cluster.ReadFile()
-        // cluster.UpdateHosts()
-      },
-    },
+    // {
+    //   Name:      "hosts",
+    //   ShortName: "hosts",
+    //   Usage:     "update hosts",
+    //   Action: func(c *cli.Context) {
+    //     cluster := NewCluster()
+    //     cluster.ReadFile()
+    //     // cluster.UpdateHosts()
+    //   },
+    // },
     {
       Name:      "tree",
       ShortName: "tree",
       Usage:     "display cluster tree",
       Action: func(c *cli.Context) {
-        cluster := NewCluster()
-        cluster.ReadFile()
-        cluster.PrintTree()
+        // cluster := NewCluster()
+        // cluster.ReadFile()
+        // cluster.PrintTree()
       },
     },
   }
