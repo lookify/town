@@ -60,29 +60,33 @@ func (t *Town) Provision(checkChanged bool) {
   allContainers, err := t.docker.ListContainers(dockerapi.ListContainersOptions{
     All: true,
   })
-  for _, listing := range allContainers {
-    container, err := t.docker.InspectContainer(listing.ID)
-    if err == nil {
-      name := container.Name[1:]
-      node, index := t.cluster.FindNodeByName(name)
-      if node != nil && index > 0 {
-        if node.Container.Exist == nil {
-          node.Container.Exist = []cluster.ExistContainer{}
+  if err == nil {
+    for _, listing := range allContainers {
+      container, err := t.docker.InspectContainer(listing.ID)
+      if err == nil {
+        name := container.Name[1:]
+        node, index := t.cluster.FindNodeByName(name)
+        if node != nil && index > 0 {
+          if node.Container.Exist == nil {
+            node.Container.Exist = []cluster.ExistContainer{}
+          }
+          runningContainer := cluster.NewExistContainer(listing.ID, name, index, container.State.Running)
+          if checkChanged {
+            node.Container.Changed = t.isChangedImage(node, container)
+          }
+          node.Container.Exist = append(node.Container.Exist, runningContainer);
         }
-        runningContainer := cluster.NewExistContainer(listing.ID, name, index, container.State.Running)
-        if checkChanged {
-          node.Container.Changed = t.isChangedImage(node, container)
-        }
-        node.Container.Exist = append(node.Container.Exist, runningContainer);
+      } else {
+        log.Println("[ERROR] Unable to inspect container:", listing.ID[:12], err)
       }
-    } else {
-      log.Println("[ERROR] Unable to inspect container:", listing.ID[:12], err)
     }
-  }
 
-  if checkChanged {
-    t.cluster.AddChangeDependant()
-  }
+    if checkChanged {
+      t.cluster.AddChangeDependant()
+    }
+    } else {
+      log.Println("[ERROR] Can't start provision")
+    }
 }
 
 
