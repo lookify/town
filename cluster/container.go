@@ -12,7 +12,7 @@ type ExistContainer struct {
 }
 
 func NewExistContainer(id string, name string, index int, running bool) *ExistContainer {
-  return &ExistContainer{
+  return ExistContainer{
     ID: id,
     Name: name,
     Index: index,
