@@ -48,7 +48,7 @@ func (c *Cluster) AddChangeDependant() {
       log.Println("Check ", node.ID)
       parents := c.graph.FindConnection(node, c.graph.In)
       if parents != nil {
-        for parent := range parents {
+        for _, parent := range parents {
           log.Println("  - ", parent.ID)
           parent.config.Changed = true
         }
