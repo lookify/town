@@ -3,6 +3,7 @@ package cluster
 import (
   "log"
   "sync"
+  "fmt"
   // dockerapi "github.com/fsouza/go-dockerclient"
 )
 
@@ -54,7 +55,7 @@ func NewNode(id string) *Node {
 
 func (g *Graph) AddNode(node *Node) (bool, error) {
   if _, ok := g.nodesIndex[node.ID]; ok {
-    return false, node.ID + " already exists"
+    return false, fmt.Errorf("`%s` already exists", node.ID)
   }
   g.Mutex.Lock()
   g.nodesIndex[node.ID] = len(g.Nodes)
