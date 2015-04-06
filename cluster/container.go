@@ -35,8 +35,8 @@ type Container struct {
   Privileged bool
 
   Scale int
-  Links []string
-  Ports map[dockerapi.Port][]dockerapi.PortBinding
+  // Links []string
+  // Ports map[dockerapi.Port][]dockerapi.PortBinding
 
   Exist []ExistContainer
 
