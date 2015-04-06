@@ -17,7 +17,6 @@ func NewExistContainer(id string, name string, index int, running bool) *Cluster
     Name: name,
     Index: index,
     Running: running,
-    Changed: true,
   }
 }
 
