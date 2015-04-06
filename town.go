@@ -5,6 +5,7 @@ import (
   "log"
   // "fmt"
 //  "regexp"
+  "encoding/json"
   "os"
   "strconv"
   "github.com/lookify/town/cluster"
@@ -130,9 +131,9 @@ func (t *Town) RemoveContainers(checkChanged bool) {
           RemoveVolumes: false,
         })
         if err == nil {
-          log.Println("   -  ", name)
+          log.Println("   -  ", container.Name)
         } else {
-          log.Println("   -  ", name, " failed ", err)
+          log.Println("   -  ", container.Name, " failed ", err)
         }
       }
     }
@@ -186,7 +187,7 @@ func (t *Town) createContainer(node *cluster.Node, index int) (string, string) {
   }
 
   if len(node.Container.Command) > 0 {
-    cmd := t.exec(node.Container.Command, i)
+    cmd := t.exec(node.Container.Command, index)
     dockerConfig.Cmd = []string{ cmd }
   }
 
