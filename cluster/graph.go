@@ -3,13 +3,13 @@ package cluster
 import (
   "log"
   "sync"
-  dockerapi "github.com/fsouza/go-dockerclient"
+  // dockerapi "github.com/fsouza/go-dockerclient"
 )
 
 type Node struct {
   ID string
 
-  status *Status
+//  status *Status
 
   config *Container  // rename it to container
 
@@ -40,14 +40,14 @@ func NewGraph() *Graph {
 func NewNode(id string) *Node {
   return &Node{
     ID:    id,
-    status: &Status {
+   // status: &Status {
       // running: 0,
       // exist: []string{ },
       // start: 0,
-      links: []string{},
-      scale: 0,
-      ports: make(map[dockerapi.Port][]dockerapi.PortBinding),
-    },
+    //  links: []string{},
+    //  scale: 0,
+    //  ports: make(map[dockerapi.Port][]dockerapi.PortBinding),
+    //},
   }
 }
 
