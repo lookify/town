@@ -42,7 +42,7 @@ func CopyContainerConfig(container *Container) *Container {
 }
 
 func (c *Cluster) AddChangeDependant() {
-  for node := range c.nodes {
+  for _, node := range c.nodes {
     // && len(node.config.Exist)
     if node.config.Changed {
       log.Println("Check ", node.ID)
