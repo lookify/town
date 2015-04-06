@@ -124,7 +124,7 @@ func (t *Town) RemoveContainers(checkChanged bool) {
   for i := len(t.cluster.Nodes) - 1; i >= 0; i-- {
     node := t.cluster.Nodes[i]
     if (!checkChanged || node.Container.Changed) && len(node.Container.Exist) > 0 {
-      for container := range node.Container.Exist {
+      for _, container := range node.Container.Exist {
         err := t.docker.RemoveContainer(dockerapi.RemoveContainerOptions{
           ID: container.ID,
           RemoveVolumes: false,
@@ -140,10 +140,7 @@ func (t *Town) RemoveContainers(checkChanged bool) {
   log.Println("=============================")
 }
 
-func doLink(name string, num int) string {
-  index := strconv.Itoa(num)
-  return name + "-" + index + ":" + name + "-" + index
-}
+
 
 func (t *Town) createContainer(node *cluster.Node, index int) (string, string) {
   containerName := node.Container.Name + "-" + strconv.Itoa(index)
@@ -199,14 +196,7 @@ func (t *Town) createContainer(node *cluster.Node, index int) (string, string) {
   //}
 
   // create links
-  links := []string{}
-  parents := t.cluster.graph.In[node]
-  for _, parent := range parents {
-    for i := 1; i <= parent.status.scale; i++ {
-      link := doLink(parent.Container.Name, i)
-      links = append(links, link);
-    }
-  }
+  links := t.cluster.GetLinks(node)
 
   portBindings := map[dockerapi.Port][]dockerapi.PortBinding{}
   // create ports

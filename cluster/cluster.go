@@ -41,6 +41,23 @@ func CopyContainerConfig(container *Container) *Container {
   return copy;
 }
 
+func doLink(name string, num int) string {
+  index := strconv.Itoa(num)
+  return name + "-" + index + ":" + name + "-" + index
+}
+
+func (c *Cluster) GetLinks(node *Node) []string {
+  links := []string{}
+  parents := c.graph.In[node]
+  for _, parent := range parents {
+    for i := 1; i <= parent.status.scale; i++ {
+      link := doLink(parent.Container.Name, i)
+      links = append(links, link);
+    }
+  }
+  return links
+}
+
 func (c *Cluster) AddChangeDependant() {
   for _, node := range c.Nodes {
     // && len(node.Container.Exist)
