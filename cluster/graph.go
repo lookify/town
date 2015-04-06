@@ -54,7 +54,7 @@ func NewNode(id string) *Node {
 
 func (g *Graph) AddNode(node *Node) (bool, error) {
   if _, ok := g.nodesIndex[node.ID]; ok {
-    return false, fmt.Errorf("`%s` already exists", node.ID)
+    return false, log.Println(node.ID, " already exists")
   }
   g.Mutex.Lock()
   g.nodesIndex[node.ID] = len(g.Nodes)
