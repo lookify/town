@@ -4,14 +4,15 @@ import (
   "os"
   log "github.com/Sirupsen/logrus"
   "github.com/codegangsta/cli"
+  "github.com/lookify/town/version"
 //  "regexp"
 )
 
 func main() {
   app := cli.NewApp()
   app.Name = "town"
-  app.Usage = "docker orchestration"
-  app.Version = "0.0.1"
+  app.Usage = "docker orchestration tool"
+  app.Version = version.VERSION + " (" + version.GITCOMMIT + ")"
   app.Author = ""
   app.Email = ""
 
