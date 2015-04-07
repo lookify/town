@@ -1,4 +1,4 @@
-FROM golang:1.4
+FROM golang:1.3
 
 COPY . /go/src/github.com/lookify/town
 WORKDIR /go/src/github.com/lookify/town
