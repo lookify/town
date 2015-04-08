@@ -184,7 +184,7 @@ func (c *Cluster) FindNodeByName(name string) (*Node, int) {
 func (c *Cluster) ParseName(name string) (string, int) {
   r, _ := regexp.Compile("([a-z\\-]+)-([0-9]+)")
   match := r.FindStringSubmatch(name)
-  if len(match) == 2 {
+  if len(match) == 3 {
     index, err := strconv.Atoi( match[2] )
     if err == nil {
       return match[1], index
