@@ -73,8 +73,11 @@ func (t *Town) Provision(checkChanged bool) {
           runningContainer := cluster.NewExistContainer(listing.ID, name, index, container.State.Running)
           if checkChanged {
             node.Container.Changed = t.isChangedImage(node, container)
+          } else {
+            node.Container.Changed = true
           }
           node.Container.Exist = append(node.Container.Exist, runningContainer);
+          log.Println("add provision ", name)
         }
       } else {
         log.Println("[ERROR] Unable to inspect container:", listing.ID[:12], err)
@@ -84,9 +87,9 @@ func (t *Town) Provision(checkChanged bool) {
     if checkChanged {
       t.cluster.AddChangeDependant()
     }
-    } else {
-      log.Println("[ERROR] Can't start provision")
-    }
+  } else {
+    log.Println("[ERROR] Can't start provision")
+  }
 }
 
 
