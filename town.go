@@ -78,6 +78,8 @@ func (t *Town) Provision(checkChanged bool) {
           }
           node.Container.Exist = append(node.Container.Exist, runningContainer);
           log.Println("add provision ", name)
+        } else {
+          log.Println("ooopa ", name, "  ", index)
         }
       } else {
         log.Println("[ERROR] Unable to inspect container:", listing.ID[:12], err)
