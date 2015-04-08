@@ -28,7 +28,7 @@ type Cluster struct {
 
 func NewCluster() *Cluster {
   return &Cluster{
-    filename: "./town.yml",
+    filename: "/etc/town/town.yml",
     config: make(map[string]Container),
     graph : NewGraph(),
   }
