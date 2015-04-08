@@ -36,7 +36,7 @@ func main() {
   app.Commands = []cli.Command{
     {
       Name:      "restart",
-      ShortName: "restart",
+      ShortName: "re",
       Usage:     "restart a cluster",
       Action: func(c *cli.Context) {
         // cluster := NewCluster()
@@ -54,7 +54,7 @@ func main() {
     },
     {
       Name:      "run",
-      ShortName: "run",
+      ShortName: "r",
       Usage:     "run a cluster",
       Action: func(c *cli.Context) {
         town := NewTown()
@@ -96,7 +96,7 @@ func main() {
     },
     {
       Name:      "stop",
-      ShortName: "stop",
+      ShortName: "s",
       Usage:     "stop a cluster",
       Action: func(c *cli.Context) {
         town := NewTown()
@@ -119,7 +119,7 @@ func main() {
     // },
     {
       Name:      "tree",
-      ShortName: "tree",
+      ShortName: "t",
       Usage:     "display cluster tree",
       Action: func(c *cli.Context) {
         // cluster := NewCluster()
