@@ -40,8 +40,11 @@ nginx:
     - /opt/public:/opt/static/
 ```
 
-To Run town simple execute:
+To Run town simple execute command:
+
+```sh
 town run
+```
 
 # Config Reference
 TBD
