@@ -96,5 +96,5 @@ _Kiril Menshikov_ - https://twitter.com/kiril
 _Arturs Licis_ - https://twitter.com/arturs_li
 
 # Copyright and license
-Code and documentation copyright 2015 (Lookify.co)[http://www.lookify.co] Code released under the Apache 2.0 license.
+Code and documentation copyright 2015 [Lookify.co](http://www.lookify.co) Code released under the Apache 2.0 license.
 
