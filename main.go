@@ -75,7 +75,7 @@ func main() {
         town.StopContainers(false)
         town.RemoveContainers(false)
       },
-    }
+    },
   }
 
   if err := app.Run(os.Args); err != nil {
