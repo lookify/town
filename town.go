@@ -340,7 +340,6 @@ func (t *Town) CreateContainers(checkChanged bool) {
   }
 }
 
-
 func (t *Town) exec(text string, scale int) string {
   replace := strings.Replace(text, "${SCALE_NUM}", strconv.Itoa(scale), -1)
   match := SCALE_NUM_REG.FindAllStringSubmatch(replace, -1)

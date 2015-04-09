@@ -5,7 +5,6 @@ import (
   "log" // was github.com/Sirupsen/logrus
   "github.com/codegangsta/cli"
   "github.com/lookify/town/version"
-//  "regexp"
 )
 
 func main() {
@@ -41,10 +40,6 @@ func main() {
       ShortName: "re",
       Usage:     "restart a cluster",
       Action: func(c *cli.Context) {
-        // cluster := NewCluster()
-        // cluster.ReadFile()
-        // cluster.Stop()
-        // cluster.Run()
         town := NewTown()
         town.ReadFile()
         town.Connect()
@@ -66,34 +61,6 @@ func main() {
         town.StopContainers(true)
         town.RemoveContainers(true)
         town.CreateContainers(true)
-
-        // cluster := NewCluster()
-        // cluster.ReadFile()
-        // //cluster.StopChanged()
-        // cluster.ResetChanged()
-        // ,-3074457345618258603,3074457345618258602
-// ([^,]+,?)+
-
-        // r, _ := regexp.Compile("\\$\\{SCALE_NUM:(.+)\\}")
-        // match := r.FindAllStringSubmatch("CASSANDRA_TOKEN=${SCALE_NUM:-9223372036854775808,-3074457345618258603,3074457345618258602}", -1)
-        // if len(match) > 0 {
-        //   //name = match[1]
-        //   for i, m := range match {
-        //     for x, n := range m {
-        //       log.Println( i, ", ", x,  ": ", n )
-        //     }
-        //   }
-        // }
-
-        /*
-        discovery := &token.TokenDiscoveryService{}
-        discovery.Initialize("", 0)
-        token, err := discovery.CreateCluster()
-        if err != nil {
-          log.Fatal(err)
-        }
-        fmt.Println(token)
-        */
       },
     },
     {
@@ -108,27 +75,7 @@ func main() {
         town.StopContainers(false)
         town.RemoveContainers(false)
       },
-    },
-    // {
-    //   Name:      "hosts",
-    //   ShortName: "hosts",
-    //   Usage:     "update hosts",
-    //   Action: func(c *cli.Context) {
-    //     cluster := NewCluster()
-    //     cluster.ReadFile()
-    //     // cluster.UpdateHosts()
-    //   },
-    // },
-    {
-      Name:      "tree",
-      ShortName: "t",
-      Usage:     "display cluster tree",
-      Action: func(c *cli.Context) {
-        // cluster := NewCluster()
-        // cluster.ReadFile()
-        // cluster.PrintTree()
-      },
-    },
+    }
   }
 
   if err := app.Run(os.Args); err != nil {
