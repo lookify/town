@@ -54,9 +54,9 @@ town run
 ```
 
 # Configuration Reference
-The configuration file /etc/town/town.yaml has list of containers names. The *application* item is reserved keyword and used for cluster definition. Here you can define how many instances of containers town needs to create.
+The configuration file /etc/town/town.yaml has list of containers names. The _application_ item is reserved keyword and used for cluster definition. Here you can define how many instances of containers town needs to create.
 
-Each container must have *image* key. The keys *command*, *environment* and *volume* can containe dynamic variables:
+Each container must have *image* key. The keys _command_, _environment_ and _volume_ can containe dynamic variables:
  * ${SCALE_INDEX} - Index of given container. Start from 1.
  * ${(container_name)_HOSTS} - Comma separated list of hosts.
 
@@ -91,10 +91,10 @@ Stop and remove all containers.
 
 # Creators
 
-*Kiril Menshikov* - [https://twitter.com/kiril]
+_Kiril Menshikov_ - https://twitter.com/kiril
 
-*Arturs Licis* - [https://twitter.com/arturs_li]
+_Arturs Licis_ - https://twitter.com/arturs_li
 
 # Copyright and license
-Code and documentation copyright 2015 Lookify.co Code released under the Apache 2.0 license.
+Code and documentation copyright 2015 (Lookify.co)[http://www.lookify.co] Code released under the Apache 2.0 license.
 
