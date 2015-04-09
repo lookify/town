@@ -2,7 +2,7 @@ package main
 
 import (
   "os"
-  log "github.com/Sirupsen/logrus"
+  "log" // was github.com/Sirupsen/logrus
   "github.com/codegangsta/cli"
   "github.com/lookify/town/version"
 //  "regexp"
@@ -26,10 +26,12 @@ func main() {
 
   // logs
   app.Before = func(c *cli.Context) error {
+    /*
     log.SetOutput(os.Stderr)
     if c.Bool("debug") {
       log.SetLevel(log.DebugLevel)
     }
+    */
     return nil
   }
 
@@ -130,6 +132,6 @@ func main() {
   }
 
   if err := app.Run(os.Args); err != nil {
-    log.Fatal(err)
+    log.Println("Error: ", err)
   }
 }
