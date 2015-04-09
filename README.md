@@ -60,31 +60,41 @@ Each container must have *image* key. The keys *command*, *environment* and *vol
  * ${SCALE_INDEX} - Index of given container. Start from 1.
  * ${(container_name)_HOSTS} - Comma separated list of hosts.
 
-## image
+#### image
 Docker image definition.
 
-## command
+#### command
 Override default command of the container.
 
-## links
+#### links
 Link to container in another service. Link is the name of other containers and will be dynamicly added depends of the container scale.
 
-## ports
+#### ports
 Expose ports.
 
-## environment
+#### environment
 List of environments variables passed to container.
 
-## volumes
+#### volumes
 Mount paths as volumes.
 
 # Commands Reference
 
-## run
+#### run
 Run containers. If the container is already running nothing will happend. But if the conatiner has new image, town will catch it and restart this container and all refer to it.
 
-## restart
+#### restart
 Restart all cluster. This operation will gracefully shutdown, remove containers and start from sratch whole cluster.
 
-## stop
+#### stop
 Stop and remove all containers.
+
+# Creators
+
+*Kiril Menshikov* - [https://twitter.com/kiril]
+
+*Arturs Licis* - [https://twitter.com/arturs_li]
+
+# Copyright and license
+Code and documentation copyright 2015 Lookify.co Code released under the Apache 2.0 license.
+
