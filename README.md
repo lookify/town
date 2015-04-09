@@ -4,6 +4,12 @@ Town help you run multi-container application in Docker. Defining a single clust
 
 Town is small and simple tool help small startups run they infrastructure very quickly.
 
+# Install
+Download the latest release:
+ * [Linux](https://github.com/lookify/town/tree/master/release/linux)
+ * [Freebsd](https://github.com/lookify/town/tree/master/release/freebsd)
+ * [Windows](https://github.com/lookify/town/tree/master/release/windows)
+
 # Example
 
 Main configuration file is /etc/town/town.yaml It describe separate containers and container relationship itself.
@@ -22,11 +28,11 @@ redis:
 
 www:
   image: node
-  command: ${SCALE_NUM}
+  command: ${SCALE_INDEX}
   links:
    - redis
   volumes:
-   - /var/log/www-${SCALE_NUM}/log/:/var/log/nodejs
+   - /var/log/www-${SCALE_INDEX}/log/:/var/log/nodejs
 
 nginx:
   image: nginx
@@ -48,9 +54,11 @@ town run
 ```
 
 # Configuration Reference
-The configuration has list of containers names. The "application" item is reserved keyword and used for cluster definition. Here you can define how many instances of containers town needs to create.
+The configuration file /etc/town/town.yaml has list of containers names. The *application* item is reserved keyword and used for cluster definition. Here you can define how many instances of containers town needs to create.
 
-Each container must have "image" key. The keys command, environment and volume can containe dynamic variables ${SCALE_INDEX}
+Each container must have *image* key. The keys *command*, *environment* and *volume* can containe dynamic variables:
+ * ${SCALE_INDEX} - Index of given container. Start from 1.
+ * ${(container_name)_HOSTS} - Comma separated list of hosts.
 
 ## image
 Docker image definition.
