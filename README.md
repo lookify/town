@@ -9,7 +9,8 @@ Town is small and simple tool help small startups run they infrastructure very q
 Main configuration file is /etc/town/town.yaml It describe separate containers and container relationship itself.
 
 ```yml
-cluster:
+application:
+  cluster:
    - "www: 1"
    - "redis: 1"
    - "nginx: 1"
@@ -46,13 +47,36 @@ To Run town simple execute command:
 town run
 ```
 
-# Config Reference
-TBD
+# Configuration Reference
+The configuration has list of containers names. The "application" item is reserved keyword and used for cluster definition. Here you can define how many instances of containers town needs to create.
 
-# Command Reference
-TBD
+Each container must have "image" key. The keys command, environment and volume can containe dynamic variables ${SCALE_INDEX}
 
+## image
+Docker image definition.
 
+## command
+Override default command of the container.
 
+## links
+Link to container in another service. Link is the name of other containers and will be dynamicly added depends of the container scale.
 
+## ports
+Expose ports.
 
+## environment
+List of environments variables passed to container.
+
+## volumes
+Mount paths as volumes.
+
+# Commands Reference
+
+## run
+Run containers. If the container is already running nothing will happend. But if the conatiner has new image, town will catch it and restart this container and all refer to it.
+
+## restart
+Restart all cluster. This operation will gracefully shutdown, remove containers and start from sratch whole cluster.
+
+## stop
+Stop and remove all containers.
