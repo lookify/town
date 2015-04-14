@@ -6,9 +6,14 @@ Town is small and simple tool help small startups run they infrastructure very q
 
 # Install
 Download the latest release:
- * [Linux](https://github.com/lookify/town/tree/master/release/linux)
- * [Freebsd](https://github.com/lookify/town/tree/master/release/freebsd)
- * [Windows](https://github.com/lookify/town/tree/master/release/windows)
+ * [Linux x86](https://raw.github.com/lookify/town/master/release/linux/town_386)
+ * [Linux x64](https://raw.github.com/lookify/town/master/release/linux/town_amd64)
+ * [Freebsd x86](https://github.com/lookify/town/tree/master/release/freebs/town_386)
+ * [Freebsd x64](https://github.com/lookify/town/tree/master/release/freebs/town_amd64)
+ * [Mac x86](https://github.com/lookify/town/tree/master/release/darwin/town_386)
+ * [Mac x64](https://github.com/lookify/town/tree/master/release/darwin/town_amd64)
+ * [Windows x86](https://raw.github.com/lookify/town/master/release/windows/town_386.exe)
+ * [Windows x64](https://raw.github.com/lookify/town/master/release/windows/town_amd64.exe)
 
 # Example
 
