@@ -1,6 +1,9 @@
 # Town
 
 Town help you run multi-container application in Docker. Defining a single cluster configuration file.
+It is simple, just like Docker Compose tool. However, it has several advantages:
+ * partial cluster update - in case images were updated it will restart only the dependant part of the cluster
+ * dynamic configuration support - IP address or number of the scale (i.e., creating number of images for this instance) can be passed
 
 Town is small and simple tool help small startups run they infrastructure very quickly.
 
