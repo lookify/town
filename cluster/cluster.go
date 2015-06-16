@@ -26,7 +26,7 @@ type Cluster struct {
 }
 
 
-func NewCluster() *Cluster {
+func NewCluster(conf string) *Cluster {
   return &Cluster{
     filename: "/etc/town/town.yml",
     config: make(map[string]Container),

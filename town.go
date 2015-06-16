@@ -37,9 +37,16 @@ func NewTown() *Town {
   }
 }
 
-func (t *Town) ReadFile() {
-  t.cluster = cluster.NewCluster()
-  t.cluster.ReadFile()
+func (t *Town) ReadFile(name string) {
+
+  var pathLoc =  "/etc/town/" + name + ".yml"
+  if _, err := os.Stat(pathLoc); err == nil {
+    //println(pathLoc)
+    t.cluster = cluster.NewCluster(pathLoc)
+    t.cluster.ReadFile()
+  } else {
+     log.Println("ERROR: Could not find file ", name)
+  }
 }
 
 func (t *Town) Connect() {
@@ -57,6 +64,27 @@ func (t *Town) Connect() {
 }
 
 func (t *Town) Provision(checkChanged bool) {
+  // update containers
+  for _, node := range t.cluster.Nodes {
+    var buf bytes.Buffer
+    var image = strings.Split(node.Container.Image, ":")
+
+    opts := dockerapi.PullImageOptions{    
+        Repository: image[0],
+        // Registry:     "docker.tsuru.io",
+        // Tag:          "latest",
+        OutputStream: &buf,
+    }
+
+    if len(image) > 1 {
+      opts.Tag = image[1]
+    }
+    err := t.docker.PullImage(opts, dockerapi.AuthConfiguration{});
+    if err != nil {
+      log.Println("Could not pull image ", image)
+    }
+  }
+
   allContainers, err := t.docker.ListContainers(dockerapi.ListContainersOptions{
     All: true,
   })
@@ -262,7 +290,7 @@ func (t *Town) CreateContainer(node *cluster.Node, index int) (string, string) {
 
         retry--;
         if retry == 0 {
-          log.Println(" Strat failed after 5 retries: ", string(out))
+          log.Println(" Start failed after 5 retries: ", string(out))
         }
         // log.Println("retry: ", retry);
       } else {

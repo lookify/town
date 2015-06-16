@@ -7,10 +7,12 @@ import (
   "github.com/lookify/town/version"
 )
 
+const DEFAULT_CLUSTER_NAME = "town"
+
 func main() {
   app := cli.NewApp()
   app.Name = "town"
-  app.Usage = "docker orchestration tool"
+  app.Usage = "town orchestartion tool for docker"
   app.Version = version.VERSION + " (" + version.GITCOMMIT + ")"
   app.Author = ""
   app.Email = ""
@@ -40,8 +42,13 @@ func main() {
       ShortName: "re",
       Usage:     "restart a cluster",
       Action: func(c *cli.Context) {
+        var name = c.Args().First()
+        if len(name) == 0 {
+          name = DEFAULT_CLUSTER_NAME
+        }
+
         town := NewTown()
-        town.ReadFile()
+        town.ReadFile(name)
         town.Connect()
         town.Provision(false)
         town.StopContainers(false)
@@ -54,8 +61,13 @@ func main() {
       ShortName: "r",
       Usage:     "run a cluster",
       Action: func(c *cli.Context) {
+        var name = c.Args().First()
+        if len(name) == 0 {
+          name = DEFAULT_CLUSTER_NAME
+        }
+
         town := NewTown()
-        town.ReadFile()
+        town.ReadFile(name)
         town.Connect()
         town.Provision(true)
         town.StopContainers(true)
@@ -68,12 +80,35 @@ func main() {
       ShortName: "s",
       Usage:     "stop a cluster",
       Action: func(c *cli.Context) {
+        var name = c.Args().First()
+        if len(name) == 0 {
+          name = DEFAULT_CLUSTER_NAME
+        }
+
         town := NewTown()
-        town.ReadFile()
+        town.ReadFile(name)
         town.Connect()
         town.Provision(false)
         town.StopContainers(false)
         town.RemoveContainers(false)
+      },
+    },
+    {
+      Name:      "deploy",
+      ShortName: "d",
+      Usage:     "deploy a cluster",
+      Action: func(c *cli.Context) {
+        var name = c.Args().First()
+        if len(name) == 0 {
+          name = DEFAULT_CLUSTER_NAME
+        }
+
+        town := NewTown()
+        town.ReadFile(name)
+        // town.Connect()
+        // town.Provision(false)
+        // town.StopContainers(false)
+        // town.RemoveContainers(false)
       },
     },
   }
