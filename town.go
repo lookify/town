@@ -39,14 +39,20 @@ func NewTown() *Town {
 
 func (t *Town) ReadFile(name string) {
 
-  var pathLoc =  "/etc/town/" + name + ".yml"
-  if _, err := os.Stat(pathLoc); err == nil {
-    //println(pathLoc)
-    t.cluster = cluster.NewCluster(pathLoc)
-    t.cluster.ReadFile()
-  } else {
-     log.Println("ERROR: Could not find file ", name)
+  var pathLocs = [...]string{
+    name + ".yml",
+    "/etc/town/" + name + ".yml",
   }
+ 
+  for _, path := range pathLocs {
+    if _, err := os.Stat(path); err == nil {
+      t.cluster = cluster.NewCluster(path)
+      t.cluster.ReadFile()
+      return 
+    }
+  }
+
+  log.Println("ERROR: Could not find file ", name)
 }
 
 func (t *Town) Connect() {

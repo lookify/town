@@ -54,6 +54,10 @@
     {
       "ImportPath": "gopkg.in/yaml.v2",
       "Rev": "a1c4bcb6c278a41992e2f4f0f29a44b4146daa5c"
+    }, 
+    {
+      "ImportPath": "github.com/lookify/town/cluster",
+      "Rev": "1758a0335a96e149dbab8eeb27ba2f35fce15c8e"
     }
   ]
 }

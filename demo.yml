@@ -1,0 +1,30 @@
+application:
+  cluster:
+   - "www: 1"
+   - "redis: 1"
+   - "nginx: 1"
+
+redis:
+  image: redis
+  environment:
+   - REDIS_PASS=secretpassword
+
+www:
+  image: node
+  command: ${SCALE_INDEX}
+  links:
+   - redis
+  volumes:
+   - /var/log/www-${SCALE_INDEX}/log/:/var/log/nodejs
+
+nginx:
+  image: nginx
+  privileged: true
+  environment:
+    - WWW_HOSTS=${WWW_HOSTS}
+  ports:
+   - "80:80"
+  links:
+   - node
+  volumes:
+    - /opt/public:/opt/static/
