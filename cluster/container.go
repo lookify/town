@@ -21,7 +21,8 @@ func NewExistContainer(id string, name string, index int, running bool) ExistCon
 }
 
 type Application struct {
-  Cluster map[string]interface{} `yaml:"cluster,inline"`
+  Cluster map[string]interface{}
+  // `yaml:"cluster,inline"`
   Docker Docker
 }
 
@@ -51,7 +52,8 @@ type Container struct {
   Changed bool
 
   // Application level 
-  Cluster map[string]interface{}  `yaml:"cluster,inline"`
+  Cluster map[string]interface{}
+  // `yaml:"cluster,inline"`
   Docker Docker
 }
 
