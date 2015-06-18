@@ -14,8 +14,6 @@ import (
   dockerapi "github.com/fsouza/go-dockerclient"
 )
 
-const DEFAULT_ENDPOINT = "unix:///var/run/docker.sock"
-
 var (
   SCALE_NUM_REG, _ = regexp.Compile("\\$\\{SCALE_NUM:(.+)\\}")
 //  SCALE_TOTAL_REG, _ = regexp.Compile("\\$\\{SCALE_NUM:(.+)\\}")
@@ -56,11 +54,13 @@ func (t *Town) ReadFile(name string) {
 }
 
 func (t *Town) Connect() {
-  envHost := os.Getenv("DOCKER_HOST")
-  endpoint := DEFAULT_ENDPOINT
-  if (envHost != "") {
-    endpoint = envHost;
-  }
+  // envHost := os.Getenv("DOCKER_HOST")
+  // log.Println("connect ", t.cluster.Application)
+
+  endpoint := t.cluster.Application.Docker.Hosts[0] // DEFAULT_ENDPOINT
+  //if (envHost != "") {
+  //  endpoint = envHost;
+  //}
   log.Println("Using Docker API endpont: ", endpoint)
   docker, err := dockerapi.NewClient( endpoint )
   if err != nil {

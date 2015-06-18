@@ -14,13 +14,14 @@ import (
   // "encoding/json"
 )
 
+const DEFAULT_ENDPOINT = "unix:///var/run/docker.sock"
 
 type Cluster struct {
   filename string
   config  map[string]Container // rename to containers
   graph *Graph
   //application *Container
-  application *Application
+  Application *Application
   cluster []string
   Nodes []*Node
 //  docker *dockerapi.Client
@@ -31,6 +32,11 @@ func NewCluster(conf string) *Cluster {
     filename: conf,
     config: make(map[string]Container),
     graph : NewGraph(),
+    Application: &Application{
+      Docker: Docker{
+       Hosts: []string{ DEFAULT_ENDPOINT },
+      },
+    },
   }
 }
 
@@ -77,7 +83,18 @@ func (c *Cluster) AddChangeDependant() {
 func (c *Cluster) AddContainer(name string, container Container) {
   container.Name = strings.TrimSpace( name );
   if container.Name == "application" {
-    c.application = CopyContainerConfig(&container)
+    // c.application = &Application{
+    //   Cluster: container.Cluster,
+    //   Docker: container.Docker,
+    // }
+    if container.Cluster != nil {
+      c.Application.Cluster = container.Cluster
+    }
+    if container.Docker.Hosts != nil {
+      c.Application.Docker.Hosts = container.Docker.Hosts
+    }
+
+    // CopyContainerConfig(&container)
     c.cluster = container.Cluster
   } else {
     node := c.graph.FindNodeByID(container.Name)
