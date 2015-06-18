@@ -18,7 +18,7 @@ const DEFAULT_ENDPOINT = "unix:///var/run/docker.sock"
 
 type Cluster struct {
   filename string
-  
+
   config  map[string]Container // rename to containers
   Application *Application
 
@@ -116,7 +116,8 @@ func (c *Cluster) CheckCluster() {
     found := false
     for _, node := range c.graph.Nodes {
       if (name == node.Container.Name) {
-        node.Container.Scale = scale
+       // TODO node.Container.Scale = scale
+        log.Println("Scale ", scale)
         found = true
         break
       }
