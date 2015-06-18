@@ -18,11 +18,12 @@ const DEFAULT_ENDPOINT = "unix:///var/run/docker.sock"
 
 type Cluster struct {
   filename string
+  
   config  map[string]Container // rename to containers
+  Application *Application
+
   graph *Graph
   //application *Container
-  Application *Application
-  cluster []string
   Nodes []*Node
 //  docker *dockerapi.Client
 }
@@ -83,19 +84,12 @@ func (c *Cluster) AddChangeDependant() {
 func (c *Cluster) AddContainer(name string, container Container) {
   container.Name = strings.TrimSpace( name );
   if container.Name == "application" {
-    // c.application = &Application{
-    //   Cluster: container.Cluster,
-    //   Docker: container.Docker,
-    // }
     if container.Cluster != nil {
       c.Application.Cluster = container.Cluster
     }
     if container.Docker.Hosts != nil {
       c.Application.Docker.Hosts = container.Docker.Hosts
     }
-
-    // CopyContainerConfig(&container)
-    c.cluster = container.Cluster
   } else {
     node := c.graph.FindNodeByID(container.Name)
     if node == nil {
@@ -118,20 +112,11 @@ func (c *Cluster) AddContainer(name string, container Container) {
 }
 
 func (c *Cluster) CheckCluster() {
-  for _, name := range c.cluster {
-    split := strings.Split(name, ":")
-    name = strings.TrimSpace(split[0])
-
+  for name, scale := range c.Application.Cluster {
     found := false
     for _, node := range c.graph.Nodes {
       if (name == node.Container.Name) {
-        scale, err := strconv.Atoi( strings.TrimSpace(split[1]) )
-        if err == nil {
-          node.Container.Scale = scale
-        } else {
-          log.Println("ERROR: Could not parse sclae number ", split[1], " for container ", name)
-        }
-
+        node.Container.Scale = scale
         found = true
         break
       }

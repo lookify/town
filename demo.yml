@@ -1,8 +1,6 @@
 application:
   cluster:
-   - "www: 1"
-   - "redis: 1"
-   - "nginx: 1"
+    www: 1
   docker:
     hosts:
       - unix:///var/run/docker.sock

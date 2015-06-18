@@ -23,20 +23,16 @@ var (
 type Town struct {
   cluster *cluster.Cluster
   docker *dockerapi.Client
-
-//  containers []*dockerapi.Container
 }
 
 func NewTown() *Town {
   return &Town{
     cluster: nil,
     docker: nil,
-    // containers: []*dockerapi.Container{}
   }
 }
 
 func (t *Town) ReadFile(name string) {
-
   var pathLocs = [...]string{
     name + ".yml",
     "/etc/town/" + name + ".yml",
@@ -54,13 +50,7 @@ func (t *Town) ReadFile(name string) {
 }
 
 func (t *Town) Connect() {
-  // envHost := os.Getenv("DOCKER_HOST")
-  // log.Println("connect ", t.cluster.Application)
-
-  endpoint := t.cluster.Application.Docker.Hosts[0] // DEFAULT_ENDPOINT
-  //if (envHost != "") {
-  //  endpoint = envHost;
-  //}
+  endpoint := t.cluster.Application.Docker.Hosts[0] // at the moment use only first
   log.Println("Using Docker API endpont: ", endpoint)
   docker, err := dockerapi.NewClient( endpoint )
   if err != nil {
