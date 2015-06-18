@@ -112,7 +112,7 @@ func (c *Cluster) AddContainer(name string, container Container) {
 }
 
 func (c *Cluster) CheckCluster() {
-  for name, scale := range c.Application.Cluster {
+  for name, _ := range c.Application.Cluster {
     log.Println("Check Name ", name)
   //   found := false
   //   for _, node := range c.graph.Nodes {
