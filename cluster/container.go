@@ -20,6 +20,16 @@ func NewExistContainer(id string, name string, index int, running bool) ExistCon
   }
 }
 
+type Application struct {
+  Cluster []string
+  Docker Docker
+}
+
+
+type Docker struct {
+  Hosts []string
+}
+
 type Container struct {
   Name string
   Image string
@@ -29,7 +39,7 @@ type Container struct {
   Links []string
   Volumes []string
   Command string
-  Cluster []string
+ 
   Post string
   Privileged bool
 
@@ -40,4 +50,11 @@ type Container struct {
   Exist []ExistContainer
 
   Changed bool
+
+
+  // Application level 
+  Cluster []string
+  Docker Docker
 }
+
+

@@ -19,12 +19,12 @@ type Cluster struct {
   filename string
   config  map[string]Container // rename to containers
   graph *Graph
-  application *Container
+  //application *Container
+  application *Application
   cluster []string
   Nodes []*Node
 //  docker *dockerapi.Client
 }
-
 
 func NewCluster(conf string) *Cluster {
   return &Cluster{

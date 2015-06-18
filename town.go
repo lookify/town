@@ -52,7 +52,7 @@ func (t *Town) ReadFile(name string) {
     }
   }
 
-  log.Println("ERROR: Could not find file ", name)
+  log.Println("ERROR: Could not find file ", name, ".yml")
 }
 
 func (t *Town) Connect() {

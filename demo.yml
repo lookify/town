@@ -3,6 +3,9 @@ application:
    - "www: 1"
    - "redis: 1"
    - "nginx: 1"
+  docker:
+    hosts:
+      - unix:///var/run/docker.sock
 
 redis:
   image: redis
