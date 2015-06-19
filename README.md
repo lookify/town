@@ -9,25 +9,32 @@ Town is small and simple tool help small startups run they infrastructure very q
 
 # Install
 Download the latest release:
- * [Mac x86](https://raw.github.com/lookify/town/master/release/darwin/town_386)
- * [Mac x64](https://raw.github.com/lookify/town/master/release/darwin/town_amd64)
- * [Linux x86](https://raw.github.com/lookify/town/master/release/linux/town_386)
- * [Linux x64](https://raw.github.com/lookify/town/master/release/linux/town_amd64)
- * [Freebsd x86](https://raw.github.com/lookify/town/master/release/freebsd/town_386)
- * [Freebsd x64](https://raw.github.com/lookify/town/master/release/freebsd/town_amd64)
- * [Windows x86](https://raw.github.com/lookify/town/master/release/windows/town_386.exe)
- * [Windows x64](https://raw.github.com/lookify/town/master/release/windows/town_amd64.exe)
+ * [Mac x86](https://raw.github.com/lookify/release/master/town/darwin/386/town)
+ * [Mac x64](https://raw.github.com/lookify/release/master/town/darwin/amd64/town)
+ * [Linux x86](https://raw.github.com/lookify/release/master/town/linux/386/town)
+ * [Linux x64](https://raw.github.com/lookify/release/master/town/linux/amd64/town)
+ * [Linux ARM](https://raw.github.com/lookify/release/master/town/linux/arm/town)
+ * [Freebsd x86](https://raw.github.com/lookify/release/master/town/freebsd/386/town)
+ * [Freebsd x64](https://raw.github.com/lookify/release/master/town/freebsd/amd64/town)
+ * [Freebsd ARM](https://raw.github.com/lookify/release/master/town/freebsd/arm/town)
+ * [Windows x86](https://raw.github.com/lookify/release/master/town/windows/386/town.exe)
+ * [Windows x64](https://raw.github.com/lookify/release/master/town/windows/amd64/town.exe)
 
 # Example
 
-Main configuration file is /etc/town/town.yaml It describe separate containers and container relationship itself.
+Configuration files must be in current directoy or /etc/town/ 
+Configuration file describe containers, container relationship itself and scale of the cluster.
 
+demo.yaml
 ```yml
 application:
   cluster:
-   - "www: 1"
-   - "redis: 1"
-   - "nginx: 1"
+    www: 1
+    redis: 1
+    nginx: 1
+  docker:
+    hosts:
+      - unix:///var/run/docker.sock
 
 redis:
   image: redis
