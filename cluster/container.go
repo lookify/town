@@ -39,9 +39,11 @@ type Container struct {
   Links []string
   Volumes []string
   Command string
- 
+
   Post string
   Privileged bool
+
+  Validate string
 
   Scale int
   // Links []string
@@ -51,7 +53,7 @@ type Container struct {
 
   Changed bool
 
-  // Application level 
+  // Application level
   Cluster map[string]int
   // `yaml:"cluster,inline"`
   Docker Docker

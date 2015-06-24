@@ -322,7 +322,12 @@ func (t *Town) CreateContainers(checkChanged bool) {
       for i := 1; i <= node.Container.Scale; i++ {
         log.Println(node.Container.Name, "  image: ", node.Container.Image)
         id, host := t.CreateContainer(node, i)
-        ids = append(ids, id)
+
+        if len(node.Container.Validate) > 0 {
+          t.bashCommand(node.Container.Name, node.Container.Validate )
+        }
+
+        ids = append(ids, node.Container.Name)
         hosts = append(hosts, host)
       }
 
@@ -363,10 +368,10 @@ func (t *Town) bashCommand(id string, command string)  {
     }
     err := t.docker.StartExec(execObj.ID, config)
     if err != nil {
-      log.Println("Start exec failed ", id, " error: ", err)
+      log.Println("Container ", id, " command failed with error: ", err)
     }
   } else {
-    log.Println("Create exec failed ", id, " error: ", err)
+    log.Println("Container ", id, " command failed with error: ", err)
   }
 }
 
