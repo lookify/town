@@ -8,6 +8,7 @@ import (
   "bytes"
   "encoding/json"
   "os"
+  "time"
   "strconv"
   "regexp"
   "github.com/lookify/town/cluster"
@@ -37,12 +38,12 @@ func (t *Town) ReadFile(name string) {
     name + ".yml",
     "/etc/town/" + name + ".yml",
   }
- 
+
   for _, path := range pathLocs {
     if _, err := os.Stat(path); err == nil {
       t.cluster = cluster.NewCluster(path)
       t.cluster.ReadFile()
-      return 
+      return
     }
   }
 
@@ -65,7 +66,7 @@ func (t *Town) Provision(checkChanged bool) {
     var buf bytes.Buffer
     var image = strings.Split(node.Container.Image, ":")
 
-    opts := dockerapi.PullImageOptions{    
+    opts := dockerapi.PullImageOptions{
         Repository: image[0],
         // Registry:     "docker.tsuru.io",
         // Tag:          "latest",
@@ -337,30 +338,35 @@ func (t *Town) CreateContainers(checkChanged bool) {
             }
           }
           buffer.WriteString("' >> /etc/hosts; touch /tmp/host-generated")
-
-          config := dockerapi.CreateExecOptions{
-            Container:    id,
-            AttachStdin:  true,
-            AttachStdout: true,
-            AttachStderr: false,
-            Tty:          false,
-            Cmd:          []string{"bash", "-c", buffer.String()},
-          }
-          execObj, err := t.docker.CreateExec(config)
-          if err == nil {
-            config := dockerapi.StartExecOptions{
-              Detach: true,
-            }
-            err := t.docker.StartExec(execObj.ID, config)
-            if err != nil {
-              log.Println("Start exec failed ", id, " error: ", err)
-            }
-          } else {
-            log.Println("Create exec failed ", id, " error: ", err)
-          }
+          t.bashCommand(id, buffer.String() )
         }
       }
+
+      time.Sleep(1000 * time.Millisecond)
     }
+  }
+}
+
+func (t *Town) bashCommand(id string, command string)  {
+  config := dockerapi.CreateExecOptions{
+    Container:    id,
+    AttachStdin:  true,
+    AttachStdout: true,
+    AttachStderr: false,
+    Tty:          false,
+    Cmd:          []string{"bash", "-c", buffer.String()},
+  }
+  execObj, err := t.docker.CreateExec(config)
+  if err == nil {
+    config := dockerapi.StartExecOptions{
+      Detach: true,
+    }
+    err := t.docker.StartExec(execObj.ID, config)
+    if err != nil {
+      log.Println("Start exec failed ", id, " error: ", err)
+    }
+  } else {
+    log.Println("Create exec failed ", id, " error: ", err)
   }
 }
 
