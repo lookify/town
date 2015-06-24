@@ -182,7 +182,7 @@ func (t *Town) RemoveContainers(checkChanged bool) {
 
 
 
-func (t *Town) CreateContainer(node *cluster.Node, index int) (string, string) {
+func (t *Town) CreateContainer(node *cluster.Node, index int) (string, string, string) {
   containerName := node.Container.Name + "-" + strconv.Itoa(index)
 
   log.Println("   -  ", containerName)
@@ -295,7 +295,7 @@ func (t *Town) CreateContainer(node *cluster.Node, index int) (string, string) {
         if inspectError == nil {
           //links = append(links, inspect.NetworkSettings.IPAddress + "  " + containerName)
           //ids = append(ids, container.ID)
-          return container.ID, inspect.NetworkSettings.IPAddress + "  " + containerName
+          return container.ID, inspect.NetworkSettings.IPAddress + "  " + containerName, containerName
         } else {
           log.Println("Inpect ", container.ID, " error ", inspectError)
         }
@@ -307,7 +307,7 @@ func (t *Town) CreateContainer(node *cluster.Node, index int) (string, string) {
     log.Println("error: ", err);
   }
 
-  return "", ""
+  return "", "", ""
 }
 
 func (t *Town) CreateContainers(checkChanged bool) {
@@ -322,13 +322,13 @@ func (t *Town) CreateContainers(checkChanged bool) {
       log.Println(node.Container.Name, "  image: ", node.Container.Image)
       for i := 1; i <= node.Container.Scale; i++ {
 
-        _, host := t.CreateContainer(node, i) //id
+        _, host, containerName := t.CreateContainer(node, i) //id
 
         if len(node.Container.Validate) > 0 {
-          t.bashCommand(host, node.Container.Validate)
+          t.bashCommand(containerName, node.Container.Validate)
         }
 
-        ids = append(ids, host)
+        ids = append(ids, containerName)
         hosts = append(hosts, host)
       }
 
