@@ -321,7 +321,7 @@ func (t *Town) CreateContainers(checkChanged bool) {
 
       for i := 1; i <= node.Container.Scale; i++ {
         log.Println(node.Container.Name, "  image: ", node.Container.Image)
-        id, host := t.CreateContainer(node, i)
+        _, host := t.CreateContainer(node, i)
 
         if len(node.Container.Validate) > 0 {
           t.bashCommand(node.Container.Name, node.Container.Validate )
