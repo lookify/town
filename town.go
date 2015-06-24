@@ -369,10 +369,10 @@ func (t *Town) bashCommand(id string, command string)  {
     }
     err := t.docker.StartExec(execObj.ID, config)
     if err != nil {
-      log.Println("Container ", id, " command failed with error: ", err)
+      log.Println("Container ", id, " command failed with error: ", err, "\n", command)
     }
   } else {
-    log.Println("Container ", id, " command failed with error: ", err)
+    log.Println("Container ", id, " command failed with error: ", err, "\n", command)
   }
 }
 
