@@ -356,18 +356,18 @@ func (t *Town) CreateContainers(checkChanged bool) {
 func (t *Town) bashCommand(id string, command string)  {
   config := dockerapi.CreateExecOptions{
     Container:    id,
-    AttachStdin:  true,
-    AttachStdout: true,
+    AttachStdin:  false,
+    AttachStdout: false,
     AttachStderr: false,
     Tty:          false,
     Cmd:          []string{"bash", "-c", command},
   }
   execObj, err := t.docker.CreateExec(config)
   if err == nil {
-    config := dockerapi.StartExecOptions{
-      Detach: true,
+    startConfig := dockerapi.StartExecOptions{
+      Detach: false,
     }
-    err := t.docker.StartExec(execObj.ID, config)
+    err := t.docker.StartExec(execObj.ID, startConfig)
     if err != nil {
       log.Println("Container ", id, " command failed with error: ", err, "\n", command)
     }
