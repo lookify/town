@@ -9,6 +9,8 @@ type ExistContainer struct {
   Name string
   Index int
   Running bool
+  Pid int
+  User string
 }
 
 func NewExistContainer(id string, name string, index int, running bool) ExistContainer {
@@ -17,6 +19,8 @@ func NewExistContainer(id string, name string, index int, running bool) ExistCon
     Name: name,
     Index: index,
     Running: running,
+    Pid: -1,
+    User: "",
   }
 }
 

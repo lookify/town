@@ -111,6 +111,23 @@ func main() {
         // town.RemoveContainers(false)
       },
     },
+    {
+      Name:      "ps",
+      ShortName: "p",
+      Usage:     "display information about running cluster",
+      Action: func(c *cli.Context) {
+        var name = c.Args().First()
+        if len(name) == 0 {
+          name = DEFAULT_CLUSTER_NAME
+        }
+
+        town := NewTown()
+        town.ReadFile(name)
+        town.Connect()
+        town.Provision(false)
+        town.Info()
+      },
+    },
   }
 
   if err := app.Run(os.Args); err != nil {

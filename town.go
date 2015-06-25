@@ -95,6 +95,8 @@ func (t *Town) Provision(checkChanged bool) {
             node.Container.Exist = []cluster.ExistContainer{}
           }
           runningContainer := cluster.NewExistContainer(listing.ID, name, index, container.State.Running)
+          runningContainer.Pid = container.Status.Pid
+          runningContainer.User = container.Config.User
           if checkChanged {
             node.Container.Changed = t.isChangedImage(node, container)
           } else {
@@ -115,6 +117,15 @@ func (t *Town) Provision(checkChanged bool) {
   }
 }
 
+func (t *Town) Info() {
+  for i := len(t.cluster.Nodes) - 1; i >= 0; i-- {
+    node := t.cluster.Nodes[i]
+    log.Println("Node ", node.Container.Name, " image ", node.Container.Changed ? "(Changed): " : ": ", node.Container.Image)
+    for _, container := range node.Container.Exist {
+      log.Println("      ", container.Name, "\t", container.Running ? "Running" : "Stoped")
+    }
+  }
+}
 
 /**
  * Check node and running container for changes.
