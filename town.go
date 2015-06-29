@@ -15,17 +15,20 @@ import (
   dockerapi "github.com/fsouza/go-dockerclient"
 )
 
-var (
-  SCALE_NUM_REG, _ = regexp.Compile("\\$\\{SCALE_NUM:(.+)\\}")
+const (
+  scaleNumRegexp, _ = regexp.Compile("\\$\\{SCALE_NUM:(.+)\\}")
 //  SCALE_TOTAL_REG, _ = regexp.Compile("\\$\\{SCALE_NUM:(.+)\\}")
-  HOSTS_REG, _ = regexp.Compile("\\$\\{(.+)_HOSTS\\}")
+  hostsRegexp, _ = regexp.Compile("\\$\\{(.+)_HOSTS\\}")
 )
 
+
+// Town describe cluster and docker clients. 
 type Town struct {
   cluster *cluster.Cluster
-  docker *dockerapi.Client
+  docker *dockerapi.Client // TODO change to multiple clients
 }
 
+// NewTown create new town with default values
 func NewTown() *Town {
   return &Town{
     cluster: nil,
@@ -33,6 +36,7 @@ func NewTown() *Town {
   }
 }
 
+// ReadFile - read town configuration fail in current direcotry or /etc/town (ext .yml)
 func (t *Town) ReadFile(name string) {
   var pathLocs = [...]string{
     name + ".yml",
@@ -50,6 +54,7 @@ func (t *Town) ReadFile(name string) {
   log.Println("ERROR: Could not find file ", name, ".yml")
 }
 
+// Connect - connect to docker hosts.
 func (t *Town) Connect() {
   endpoint := t.cluster.Application.Docker.Hosts[0] // at the moment use only first
   log.Println("Using Docker API endpont: ", endpoint)
@@ -60,6 +65,7 @@ func (t *Town) Connect() {
   t.docker = docker
 }
 
+// Provision running containers.
 func (t *Town) Provision(checkChanged bool) {
   // update containers
   for _, node := range t.cluster.Nodes {
@@ -118,6 +124,7 @@ func (t *Town) Provision(checkChanged bool) {
   }
 }
 
+// Info - print current cluster information.
 func (t *Town) Info() {
   for i := len(t.cluster.Nodes) - 1; i >= 0; i-- {
     node := t.cluster.Nodes[i]
@@ -148,15 +155,13 @@ func (t *Town) isChangedImage(node *cluster.Node, container *dockerapi.Container
     secondImage , secondError := t.docker.InspectImage(node.Container.Image)
     if secondError == nil {
       return secondImage.Created.After(image.Created)
-    } else {
-      log.Println("[ERROR] Could not inspect image ", node.Container.Name)
     }
-  } else {
-    log.Println("[ERROR] Could not inspect image ", imageName)
   }
+  log.Println("[ERROR] Could not inspect image ", node.Container.Name)
   return false
 }
 
+// StopContainers - stop all containers or only containers with changed images.
 func (t *Town) StopContainers(checkChanged bool) {
   log.Println("Stop...")
   //for node := range t.cluster.nodes {
@@ -178,6 +183,7 @@ func (t *Town) StopContainers(checkChanged bool) {
   log.Println("=============================")
 }
 
+// RemoveContainers - remove container form local repository.
 func (t *Town) RemoveContainers(checkChanged bool) {
   log.Println("Remove...")
   //for node := range t.cluster.nodes {
@@ -201,7 +207,7 @@ func (t *Town) RemoveContainers(checkChanged bool) {
 }
 
 
-
+// CreateContainer - create container.
 func (t *Town) CreateContainer(node *cluster.Node, index int) (string, string, string) {
   containerName := node.Container.Name + "-" + strconv.Itoa(index)
 
@@ -316,20 +322,22 @@ func (t *Town) CreateContainer(node *cluster.Node, index int) (string, string, s
           //links = append(links, inspect.NetworkSettings.IPAddress + "  " + containerName)
           //ids = append(ids, container.ID)
           return container.ID, inspect.NetworkSettings.IPAddress + "  " + containerName, containerName
-        } else {
-          log.Println("Inpect ", container.ID, " error ", inspectError)
-        }
+        } 
+        
+        log.Println("Inpect ", container.ID, " error ", inspectError)
+        
         //retry = 0
         break;
       }
     }
   } else {
-    log.Println("error: ", err);
+    log.Println("Create container ", containerName, " error: ", err);
   }
 
   return "", "", ""
 }
 
+// CreateContainers - create list of containers.
 func (t *Town) CreateContainers(checkChanged bool) {
   log.Println("Create...")
   for _, node := range t.cluster.Nodes {
@@ -373,6 +381,7 @@ func (t *Town) CreateContainers(checkChanged bool) {
   }
 }
 
+// bashCommand - execute bash command inside container.
 func (t *Town) bashCommand(id string, command string)  {
   config := dockerapi.CreateExecOptions{
     Container:    id,
@@ -387,7 +396,7 @@ func (t *Town) bashCommand(id string, command string)  {
     startConfig := dockerapi.StartExecOptions{
       Detach: false,
     }
-    err := t.docker.StartExec(execObj.ID, startConfig)
+    err = t.docker.StartExec(execObj.ID, startConfig)
     if err != nil {
       log.Println("Container ", id, " command failed with error: ", err, "\n", command)
     }
@@ -398,8 +407,8 @@ func (t *Town) bashCommand(id string, command string)  {
 
 func (t *Town) exec(text string, scale int) string {
   replace := strings.Replace(text, "${SCALE_NUM}", strconv.Itoa(scale), -1)
-  match := SCALE_NUM_REG.FindAllStringSubmatch(replace, -1)
-  hostMatch := HOSTS_REG.FindAllStringSubmatch(replace, -1)
+  match := scaleNumRegexp.FindAllStringSubmatch(replace, -1)
+  hostMatch := hostsRegexp.FindAllStringSubmatch(replace, -1)
   if len(match) > 0 {
     if len(match[0]) > 1 {
       nums := strings.Split(match[0][1], ",")

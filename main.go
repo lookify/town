@@ -7,7 +7,7 @@ import (
   "github.com/lookify/town/version"
 )
 
-const DEFAULT_CLUSTER_NAME = "town"
+const defaultClusterName = "town"
 
 func main() {
   app := cli.NewApp()
@@ -44,7 +44,7 @@ func main() {
       Action: func(c *cli.Context) {
         var name = c.Args().First()
         if len(name) == 0 {
-          name = DEFAULT_CLUSTER_NAME
+          name = defaultClusterName
         }
 
         town := NewTown()
@@ -63,7 +63,7 @@ func main() {
       Action: func(c *cli.Context) {
         var name = c.Args().First()
         if len(name) == 0 {
-          name = DEFAULT_CLUSTER_NAME
+          name = defaultClusterName
         }
 
         town := NewTown()
@@ -82,7 +82,7 @@ func main() {
       Action: func(c *cli.Context) {
         var name = c.Args().First()
         if len(name) == 0 {
-          name = DEFAULT_CLUSTER_NAME
+          name = defaultClusterName
         }
 
         town := NewTown()
@@ -100,7 +100,7 @@ func main() {
       Action: func(c *cli.Context) {
         var name = c.Args().First()
         if len(name) == 0 {
-          name = DEFAULT_CLUSTER_NAME
+          name = defaultClusterName
         }
 
         town := NewTown()
@@ -118,7 +118,7 @@ func main() {
       Action: func(c *cli.Context) {
         var name = c.Args().First()
         if len(name) == 0 {
-          name = DEFAULT_CLUSTER_NAME
+          name = defaultClusterName
         }
 
         town := NewTown()
