@@ -15,7 +15,7 @@ import (
   dockerapi "github.com/fsouza/go-dockerclient"
 )
 
-const (
+var (
   scaleNumRegexp, _ = regexp.Compile("\\$\\{SCALE_NUM:(.+)\\}")
 //  SCALE_TOTAL_REG, _ = regexp.Compile("\\$\\{SCALE_NUM:(.+)\\}")
   hostsRegexp, _ = regexp.Compile("\\$\\{(.+)_HOSTS\\}")
