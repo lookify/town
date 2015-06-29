@@ -96,7 +96,7 @@ func (t *Town) Provision(checkChanged bool) {
             node.Container.Exist = []cluster.ExistContainer{}
           }
           runningContainer := cluster.NewExistContainer(listing.ID, name, index, container.State.Running)
-          runningContainer.Pid = container.Status.Pid
+          runningContainer.Pid = container.State.Pid
           runningContainer.User = container.Config.User
           if checkChanged {
             node.Container.Changed = t.isChangedImage(node, container)
