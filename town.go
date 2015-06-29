@@ -121,9 +121,18 @@ func (t *Town) Provision(checkChanged bool) {
 func (t *Town) Info() {
   for i := len(t.cluster.Nodes) - 1; i >= 0; i-- {
     node := t.cluster.Nodes[i]
-    log.Println("Node ", node.Container.Name, " image ", node.Container.Changed ? "(Changed): " : ": ", node.Container.Image)
+    log.Print("Node ", node.Container.Name, " image ")
+	if node.Container.Changed {
+	 log.Print("(Changed)")
+    }
+	log.Println(": ", node.Container.Image)
     for _, container := range node.Container.Exist {
-      log.Println("      ", container.Name, "\t", container.Running ? "Running" : "Stoped")
+      log.Print("      ", container.Name, "\t")
+	  if container.Running {
+	    log.Println("Running")
+	  } else {
+	    log.Print("Stoped")
+	  }
     }
   }
 }
