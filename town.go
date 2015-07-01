@@ -22,7 +22,7 @@ var (
 )
 
 
-// Town describe cluster and docker clients. 
+// Town describe cluster and docker clients.
 type Town struct {
   cluster *cluster.Cluster
   docker *dockerapi.Client // TODO change to multiple clients
@@ -129,17 +129,17 @@ func (t *Town) Info() {
   for i := len(t.cluster.Nodes) - 1; i >= 0; i-- {
     node := t.cluster.Nodes[i]
     log.Print("Node ", node.Container.Name, " image ")
-	if node.Container.Changed {
-	 log.Print("(Changed)")
+	  if node.Container.Changed {
+      log.Print("(Changed)")
     }
-	log.Println(": ", node.Container.Image)
+	  log.Println(": ", node.Container.Image)
     for _, container := range node.Container.Exist {
       log.Print("      ", container.Name, "\t")
-	  if container.Running {
-	    log.Println("Running")
-	  } else {
-	    log.Print("Stoped")
-	  }
+  	  if container.Running {
+  	    log.Println("Running")
+  	  } else {
+  	    log.Print("Stoped")
+  	  }
     }
   }
 }
@@ -322,10 +322,10 @@ func (t *Town) CreateContainer(node *cluster.Node, index int) (string, string, s
           //links = append(links, inspect.NetworkSettings.IPAddress + "  " + containerName)
           //ids = append(ids, container.ID)
           return container.ID, inspect.NetworkSettings.IPAddress + "  " + containerName, containerName
-        } 
-        
+        }
+
         log.Println("Inpect ", container.ID, " error ", inspectError)
-        
+
         //retry = 0
         break;
       }
@@ -376,7 +376,28 @@ func (t *Town) CreateContainers(checkChanged bool) {
         }
       }
 
-      time.Sleep(1000 * time.Millisecond)
+      // time.Sleep(1000 * time.Millisecond)
+    } else if len(node.Container.Exist) <= node.Container.Scale {
+      log.Println(node.Container.Name, "  image: ", node.Container.Image)
+      var create[node.Container.Scale]bool
+      for i := 1; i <= node.Container.Scale; i++ {
+        create[i] = true
+      }
+      for _, container := range node.Container.Exist {
+        if container.Running {
+          create[container.Index] = false;
+        }
+      }
+
+      for i := 1; i <= node.Container.Scale; i++ {
+        if create[i] {
+          _, _, containerName := t.CreateContainer(node, i)
+          // TODO add hosts
+          if len(node.Container.Validate) > 0 {
+            t.bashCommand(containerName, node.Container.Validate)
+          }
+        }
+      }
     }
   }
 }
