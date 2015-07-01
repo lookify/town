@@ -390,7 +390,7 @@ func (t *Town) CreateContainers(checkChanged bool) {
       }
 
       for i := 0; i < node.Container.Scale; i++ {
-        if create[i + 1] {
+        if create[i] {
           _, _, containerName := t.CreateContainer(node, i + 1)
           // TODO add hosts
           if len(node.Container.Validate) > 0 {
