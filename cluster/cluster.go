@@ -70,7 +70,7 @@ func (c *Cluster) AddChangeDependant() {
     // && len(node.Container.Exist)
     if node.Container.Changed {
       log.Println("Check ", node.ID)
-      parents := c.graph.FindConnection(node, c.graph.In)
+      parents := c.graph.FindConnection(node, c.graph.Out)
       if parents != nil {
         for _, parent := range parents {
           log.Println("  - ", parent.ID)
