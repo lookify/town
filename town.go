@@ -379,7 +379,7 @@ func (t *Town) CreateContainers(checkChanged bool) {
       time.Sleep(1000 * time.Millisecond)
     } else if len(node.Container.Exist) <= node.Container.Scale {
       log.Println(node.Container.Name, "  image: ", node.Container.Image, "  ", node.Container.Scale)
-      create := [ node.Container.Scale ]bool
+      var create [ node.Container.Scale ]bool
       for i := 0; i < node.Container.Scale; i++ {
         create[i] = true
       }
