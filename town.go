@@ -376,22 +376,22 @@ func (t *Town) CreateContainers(checkChanged bool) {
         }
       }
 
-      // time.Sleep(1000 * time.Millisecond)
+      time.Sleep(1000 * time.Millisecond)
     } else if len(node.Container.Exist) <= node.Container.Scale {
       log.Println(node.Container.Name, "  image: ", node.Container.Image)
       var create[node.Container.Scale]bool
-      for i := 1; i <= node.Container.Scale; i++ {
+      for i := 0; i < node.Container.Scale; i++ {
         create[i] = true
       }
       for _, container := range node.Container.Exist {
         if container.Running {
-          create[container.Index] = false;
+          create[container.Index - 1] = false;
         }
       }
 
-      for i := 1; i <= node.Container.Scale; i++ {
-        if create[i] {
-          _, _, containerName := t.CreateContainer(node, i)
+      for i := 0; i < node.Container.Scale; i++ {
+        if create[i + 1] {
+          _, _, containerName := t.CreateContainer(node, i + 1)
           // TODO add hosts
           if len(node.Container.Validate) > 0 {
             t.bashCommand(containerName, node.Container.Validate)
