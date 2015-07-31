@@ -307,7 +307,7 @@ func (t *Town) CreateContainer(node *cluster.Node, index int) (string, string, s
   opts := dockerapi.CreateContainerOptions{Name: containerName, Config: &dockerConfig, HostConfig: &hostConfig}
   container, err := t.docker.CreateContainer(opts)
   if err == nil {
-    runningContainer := cluster.NewExistContainer(container.ID, name, index, true)
+    runningContainer := cluster.NewExistContainer(container.ID, containerName, index, true)
     node.Container.Exist = append(node.Container.Exist, runningContainer)
     // runningContainer.Pid = container.State.Pid
     // runningContainer.User = container.Config.User
