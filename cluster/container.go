@@ -32,6 +32,13 @@ type Application struct {
 
 type Docker struct {
   Hosts []string
+  Repository []string
+}
+
+type Exec struct {
+  Post string
+  Pre string
+  Validate string
 }
 
 type Container struct {
@@ -47,7 +54,7 @@ type Container struct {
   Post string
   Privileged bool
 
-  Validate string
+  Exec Exec
 
   Scale int
   // Links []string

@@ -68,23 +68,30 @@ func (t *Town) Connect() {
 // Provision running containers.
 func (t *Town) Provision(checkChanged bool) {
   // update containers
-  for _, node := range t.cluster.Nodes {
-    var buf bytes.Buffer
-    var image = strings.Split(node.Container.Image, ":")
+  bool pull = true
+  if len(t.cluster.Application.Docker.Repository) == 1 && t.cluster.Application.Docker.Repository[0] == "local" {
+    pull = false
+  }
 
-    opts := dockerapi.PullImageOptions{
-        Repository: image[0],
-        // Registry:     "docker.tsuru.io",
-        // Tag:          "latest",
-        OutputStream: &buf,
-    }
+  if pull {
+    for _, node := range t.cluster.Nodes {
+      var buf bytes.Buffer
+      var image = strings.Split(node.Container.Image, ":")
 
-    if len(image) > 1 {
-      opts.Tag = image[1]
-    }
-    err := t.docker.PullImage(opts, dockerapi.AuthConfiguration{});
-    if err != nil {
-      log.Println("Could not pull image ", image)
+      opts := dockerapi.PullImageOptions{
+          Repository: image[0],
+          // Registry:     "docker.tsuru.io",
+          // Tag:          "latest",
+          OutputStream: &buf,
+      }
+
+      if len(image) > 1 {
+        opts.Tag = image[1]
+      }
+      err := t.docker.PullImage(opts, dockerapi.AuthConfiguration{});
+      if err != nil {
+        log.Println("Could not pull image ", image)
+      }
     }
   }
 
@@ -299,6 +306,16 @@ func (t *Town) CreateContainer(node *cluster.Node, index int) (string, string, s
   opts := dockerapi.CreateContainerOptions{Name: containerName, Config: &dockerConfig, HostConfig: &hostConfig}
   container, err := t.docker.CreateContainer(opts)
   if err == nil {
+    runningContainer := cluster.NewExistContainer(container.ID, name, index, true)
+    node.Container.Exist = append(node.Container.Exist, runningContainer)
+    // runningContainer.Pid = container.State.Pid
+    // runningContainer.User = container.Config.User
+    // if checkChanged {
+    //   node.Container.Changed = t.isChangedImage(node, container)
+    // } else {
+    //   node.Container.Changed = true
+    // }
+
     retry := 5
     for retry > 0 {
       error := t.docker.StartContainer(container.ID, &hostConfig)
@@ -352,8 +369,8 @@ func (t *Town) CreateContainers(checkChanged bool) {
 
         _, host, containerName := t.CreateContainer(node, i) //id
 
-        if len(node.Container.Validate) > 0 {
-          t.bashCommand(containerName, node.Container.Validate)
+        if len(node.Container.Exec.Post) > 0 {
+          t.bashCommand(containerName, node.Container.Exec.Post)
         }
 
         ids = append(ids, containerName)
@@ -377,7 +394,7 @@ func (t *Town) CreateContainers(checkChanged bool) {
       }
 
       time.Sleep(1000 * time.Millisecond)
-    } else if len(node.Container.Exist) <= node.Container.Scale {
+    } else if len(node.Container.Exist) < node.Container.Scale {
       log.Println(node.Container.Name, "  image: ", node.Container.Image, "  ", node.Container.Scale)
       var create =  make([]bool, node.Container.Scale)
       for i := 0; i < node.Container.Scale; i++ {
@@ -391,10 +408,11 @@ func (t *Town) CreateContainers(checkChanged bool) {
 
       for i := 0; i < node.Container.Scale; i++ {
         if create[i] {
+          // TODO create or start
           _, _, containerName := t.CreateContainer(node, i + 1)
           // TODO add hosts
-          if len(node.Container.Validate) > 0 {
-            t.bashCommand(containerName, node.Container.Validate)
+          if len(node.Container.Exec.Post) > 0 {
+            t.bashCommand(containerName, node.Container.Exec.Post)
           }
         }
       }
