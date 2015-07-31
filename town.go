@@ -68,8 +68,9 @@ func (t *Town) Connect() {
 // Provision running containers.
 func (t *Town) Provision(checkChanged bool) {
   // update containers
-  bool pull = true
-  if len(t.cluster.Application.Docker.Repository) == 1 && t.cluster.Application.Docker.Repository[0] == "local" {
+  pull := true
+  repository := t.cluster.Application.Docker.Repository
+  if len(repository) == 1 && repository[0] == "local" {
     pull = false
   }
 
