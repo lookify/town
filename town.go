@@ -70,6 +70,7 @@ func (t *Town) Provision(checkChanged bool) {
   // update containers
   pull := true
   repository := t.cluster.Application.Docker.Repository
+  log.Println("repository ", len(repository))
   if len(repository) == 1 && repository[0] == "local" {
     pull = false
   }
