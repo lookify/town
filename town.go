@@ -75,6 +75,8 @@ func (t *Town) Provision(checkChanged bool) {
     pull = false
   }
 
+  pull = false // DO NOT pull at the moment
+
   if pull {
     for _, node := range t.cluster.Nodes {
       var buf bytes.Buffer
