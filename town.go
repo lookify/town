@@ -432,6 +432,7 @@ func (t *Town) bashCommand(id string, command string)  {
     AttachStdout: false,
     AttachStderr: false,
     Tty:          false,
+    User: "root",
     Cmd:          []string{"bash", "-c", command},
   }
   execObj, err := t.docker.CreateExec(config)
