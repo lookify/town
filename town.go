@@ -66,7 +66,7 @@ func (t *Town) Connect() {
 }
 
 // Provision running containers.
-func (t *Town) Provision(checkChanged bool, container string) {
+func (t *Town) Provision(checkChanged bool, containerName string) {
   // update containers
   pull := true
   repository := t.cluster.Application.Docker.Repository
@@ -115,7 +115,7 @@ func (t *Town) Provision(checkChanged bool, container string) {
           runningContainer := cluster.NewExistContainer(listing.ID, name, index, container.State.Running)
           runningContainer.Pid = container.State.Pid
           runningContainer.User = container.Config.User
-          if checkChanged && name != container {
+          if checkChanged && name != containerName {
             node.Container.Changed = t.isChangedImage(node, container)
           } else {
             node.Container.Changed = true
