@@ -69,7 +69,7 @@ func main() {
 		if c.NArg() > 1 && name == "-name" {
 		  container = c.Args()[1]
 		  name = defaultClusterName
-		  if if c.NArg() > 2 {
+		  if c.NArg() > 2 {
 		    container = c.Args()[2]
 		  }
 		}
