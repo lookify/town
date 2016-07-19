@@ -66,7 +66,7 @@ func (t *Town) Connect() {
 }
 
 // Provision running containers.
-func (t *Town) Provision(checkChanged bool) {
+func (t *Town) Provision(checkChanged bool, container string) {
   // update containers
   pull := true
   repository := t.cluster.Application.Docker.Repository
@@ -115,7 +115,7 @@ func (t *Town) Provision(checkChanged bool) {
           runningContainer := cluster.NewExistContainer(listing.ID, name, index, container.State.Running)
           runningContainer.Pid = container.State.Pid
           runningContainer.User = container.Config.User
-          if checkChanged {
+          if checkChanged && name != container {
             node.Container.Changed = t.isChangedImage(node, container)
           } else {
             node.Container.Changed = true
@@ -127,6 +127,13 @@ func (t *Town) Provision(checkChanged bool) {
       }
     }
 
+	for i := len(t.cluster.Nodes) - 1; i >= 0; i-- {
+	  node := t.cluster.Nodes[i]
+	  if node.Container.Exist == nil {
+	    node.Container.Changed = true
+	  }
+	}
+	  
     if checkChanged {
       t.cluster.AddChangeDependant()
     }

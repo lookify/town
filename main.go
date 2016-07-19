@@ -50,7 +50,7 @@ func main() {
         town := NewTown()
         town.ReadFile(name)
         town.Connect()
-        town.Provision(false)
+        town.Provision(false, "")
         town.StopContainers(false)
         town.RemoveContainers(false)
         town.CreateContainers(false)
@@ -62,14 +62,22 @@ func main() {
       Usage:     "run a cluster",
       Action: func(c *cli.Context) {
         var name = c.Args().First()
+		var container = ""
         if len(name) == 0 {
           name = defaultClusterName
         }
+		if c.NArg() > 1 && name == "-name" {
+		  container = c.Args()[1]
+		  name = defaultClusterName
+		  if if c.NArg() > 2 {
+		    container = c.Args()[2]
+		  }
+		}
 
         town := NewTown()
         town.ReadFile(name)
         town.Connect()
-        town.Provision(true)
+        town.Provision(true, container)
         town.StopContainers(true)
         town.RemoveContainers(true)
         town.CreateContainers(true)
@@ -88,7 +96,7 @@ func main() {
         town := NewTown()
         town.ReadFile(name)
         town.Connect()
-        town.Provision(false)
+        town.Provision(false, "")
         town.StopContainers(false)
         town.RemoveContainers(false)
       },
@@ -124,7 +132,7 @@ func main() {
         town := NewTown()
         town.ReadFile(name)
         town.Connect()
-        town.Provision(false)
+        town.Provision(false, "")
         town.Info()
       },
     },
