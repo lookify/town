@@ -297,12 +297,17 @@ func (t *Town) CreateContainer(node *cluster.Node, index int) (string, string, s
       HostPort: port[0],
     })
   }
+  
+  var network = "bridge"
+  if len(node.Container.Network) > 0 {
+    network = node.Container.Network
+  }
 
   hostConfig := dockerapi.HostConfig{
     Binds: binds,
     Links: links, //, [],
     PortBindings: portBindings,
-    NetworkMode: "bridge",
+    NetworkMode: network,
     PublishAllPorts: false,
     Privileged: node.Container.Privileged,
   }

@@ -53,6 +53,7 @@ type Container struct {
 
   Post string
   Privileged bool
+  Network string
 
   Exec Exec
 
