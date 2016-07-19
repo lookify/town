@@ -68,10 +68,10 @@ func main() {
         }
 		var largs = len(c.Args())
 		if largs > 1 && name == "-name" {
-		  container = c.Args().get(1)
+		  container = c.Args().Get(1)
 		  name = defaultClusterName
 		  if largs > 2 {
-		    name = c.Args().get(2)
+		    name = c.Args().Get(2)
 		  }
 		}
 
